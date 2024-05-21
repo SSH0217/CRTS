@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -46,6 +47,15 @@ public class APIController {
     @Autowired
     private ExecuteLogRepository executeLogRepository;
 
+    @Autowired
+    private OrganizationRepository organizationRepository;
+    @Autowired
+    private SupervisionRepository supervisionRepository;
+    @Autowired
+    private TestSubjectRepository testSubjectRepository;
+    @Autowired
+    private DeviceRepository deviceRepository;
+
     private final AuthenticationManager authenticationManager;
 
     @Autowired
@@ -69,8 +79,6 @@ public class APIController {
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Exception Login failed: " + e.getMessage());
         }
-
-
     }
 
     @PostMapping("/a-test-result")
@@ -204,5 +212,39 @@ public class APIController {
         TestResultData testResultData = new TestResultData();
         testResultData.setTestType("A");
         return testResultData;
+    }
+
+    private PasswordEncoder passwordEncoder;
+    @PostMapping("test-insert")
+    public String testInsert(){
+        Organization organization = new Organization();
+        organization.setName("testOrganization");
+        organization.setDescription("test description");
+        organization.setCreatedDate(LocalDateTime.now());
+        organizationRepository.save(organization);
+
+        Supervision supervision = new Supervision();
+        supervision.setSupervisionName("testSupervision");
+        supervision.setLoginId("test@test.com");
+        supervision.setLoginPw(passwordEncoder.encode("1234"));
+        supervision.setCreatedDate((LocalDateTime.now()));
+        supervision.setOrganization(organization);
+        supervisionRepository.save(supervision);
+
+        Device device = new Device();
+        device.setDeviceName("testDevice");
+        device.setDeviceNum(1);
+        device.setOrganization(organization);
+        deviceRepository.save(device);
+
+        TestSubject testSubject = new TestSubject();
+        testSubject.setName("testSubject");
+        testSubject.setAge(60);
+        testSubject.setGender("male");
+        testSubject.setCreatedDate(LocalDateTime.now());
+        testSubject.setSupervision(supervision);
+        testSubjectRepository.save(testSubject);
+
+        return "good";
     }
 }

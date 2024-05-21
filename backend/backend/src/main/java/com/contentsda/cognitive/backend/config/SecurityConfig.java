@@ -35,6 +35,10 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/login")
                         .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/api/logout")
+                        .permitAll()
                 );
 
         return http.build();

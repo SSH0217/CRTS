@@ -9,6 +9,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Box sx={{ display: 'flex' }}>
       <Sidebar />
       <Dashboard />
