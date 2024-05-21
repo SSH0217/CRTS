@@ -11,16 +11,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig {
     @Bean
-    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> servletContainer() {
-        return server -> server.addAdditionalTomcatConnectors(createStandardConnector());
-    }
-
-    private Connector createStandardConnector() {
-        Connector connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
-        connector.setPort(8081);  // HTTP 포트 설정
-        return connector;
-    }
-    @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
