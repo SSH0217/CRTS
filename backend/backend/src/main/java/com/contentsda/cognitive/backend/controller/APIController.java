@@ -214,6 +214,7 @@ public class APIController {
         return testResultData;
     }
 
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @PostMapping("test-insert")
     public String testInsert(){
