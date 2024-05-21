@@ -34,10 +34,6 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginProcessingUrl("/api/login")
                         .permitAll()
-                )
-                .requiresChannel(requiresChannel -> requiresChannel
-                        .anyRequest()
-                        .requiresSecure()
                 );
 
         return http.build();
