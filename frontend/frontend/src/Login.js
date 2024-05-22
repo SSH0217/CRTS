@@ -14,7 +14,7 @@ const Login = ({ setIsLoggedIn }) => {
     setError(''); // Reset the error message
     try {
       const response = await axios.post(
-        '/api/login',
+        '/api/login-real',
         { loginId, loginPw },
         {
           headers: {

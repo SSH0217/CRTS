@@ -98,7 +98,7 @@ public class APIController {
         String loginPw = loginRequest.getLoginPw();
 
         Supervision supervision = supervisionRepository.findByLoginId(loginId);
-        if (supervision == null && !passwordEncoder.matches(loginPw, supervision.getLoginPw())) {
+        if (supervision == null || !passwordEncoder.matches(loginPw, supervision.getLoginPw())) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(loginPw);
@@ -228,6 +228,11 @@ public class APIController {
 
 
         return "patientInfo sent successfully";
+    }
+
+    @GetMapping("/contents-list")
+    public String contentsList(){
+        return "contentsList sent successfully";
     }
 
     @GetMapping("/get-test")
