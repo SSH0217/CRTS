@@ -65,7 +65,7 @@ public class APIController {
     public APIController(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
     }
-    @PostMapping("/login")
+    @PostMapping("/login-test")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         logger.info("Login endpoint hit");
         try {
@@ -92,7 +92,7 @@ public class APIController {
         }
     }
 
-    @PostMapping("/login-test")
+    @PostMapping("/login")
     public ResponseEntity<String> loginTest(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
         String loginId = loginRequest.getLoginId();
         String loginPw = loginRequest.getLoginPw();

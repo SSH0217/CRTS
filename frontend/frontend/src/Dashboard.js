@@ -1,12 +1,11 @@
 import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { Line, Pie } from 'react-chartjs-2';
+import { Bar, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,
   ArcElement,
   Tooltip,
   Legend,
@@ -15,28 +14,25 @@ import {
 ChartJS.register(
   CategoryScale,
   LinearScale,
-  PointElement,
-  LineElement,
+  BarElement,
   ArcElement,
   Tooltip,
   Legend
 );
 
 const Dashboard = () => {
-  const lineData = {
+  const barData = {
     labels: ['2024-02-21', '2024-02-22', '2024-03-20', '2024-05-10'],
     datasets: [
       {
         label: 'Time Spent (Seconds)',
         data: [0, 20, 10, 90],
-        borderColor: 'blue',
-        backgroundColor: 'rgba(0, 0, 255, 0.1)',
+        backgroundColor: 'rgba(0, 0, 255, 0.5)',
       },
       {
         label: 'Performance Score (%)',
         data: [0, 30, 20, 120],
-        borderColor: 'orange',
-        backgroundColor: 'rgba(255, 165, 0, 0.1)',
+        backgroundColor: 'rgba(255, 165, 0, 0.5)',
       },
     ],
   };
@@ -55,17 +51,15 @@ const Dashboard = () => {
   return (
     <Box sx={{ flexGrow: 1, p: 3 }}>
       <Typography variant="h4" gutterBottom>
-        Hi, Welcome back 👋
+        인지기능 평가
       </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Box sx={{ width: '60%' }}>
-          <Typography variant="h6">Total Time Spent</Typography>
-          <Line data={lineData} />
-        </Box>
-        <Box sx={{ width: '35%' }}>
-          <Typography variant="h6">Content Metrics</Typography>
-          <Pie data={pieData} />
-        </Box>
+      <Box sx={{ width: '80%', margin: '0 auto' }}>
+        <Typography variant="h6">Total Time Spent</Typography>
+        <Bar data={barData} />
+      </Box>
+      <Box sx={{ width: '60%', margin: '20px auto' }}>
+        <Typography variant="h6">Content Metrics</Typography>
+        <Pie data={pieData} />
       </Box>
     </Box>
   );

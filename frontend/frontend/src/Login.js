@@ -12,7 +12,7 @@ function Login() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        '/api/login-test',
+        '/api/login',
         { loginId, loginPw },
         {
           headers: {
