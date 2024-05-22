@@ -113,6 +113,14 @@ public class APIController {
 
     @PostMapping("/a-test-result")
     public String addATestResult(@RequestBody TestResultData testResultData){
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
+        TestResult testResult = new TestResult();
+        testResult.setTestSubject(testSubjectRepository.findById(Long.valueOf(testResultData.getPatientID())).orElse(null));
+        testResult.setTestStartTime(LocalDateTime.parse(testResultData.getStartTime(), formatter));
+        testResult.setTestEndTime(LocalDateTime.parse(testResultData.getEndTime(), formatter));
+        testResultRepository.save(testResult);
+
         MartMemoryTestResult martMemoryTestResult = new MartMemoryTestResult();
         martMemoryTestResult.setMartMemoryResult1(testResultData.isMartMemoryResult1());
         martMemoryTestResult.setMartMemoryResult2(testResultData.isMartMemoryResult2());
@@ -149,7 +157,7 @@ public class APIController {
         microwaveExecuteTestResultRepository.save(microwaveExecuteTestResult);
 
         int logNum = 0;
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
         for(int i = 0; i < testResultData.getMicrowaveLog().size(); i++){
             ExecuteLog executeLog = new ExecuteLog();
             executeLog.setLogNum(Long.valueOf(logNum));
@@ -165,20 +173,23 @@ public class APIController {
         aTestResult.setSeparateVisuospatialTestResult(separateVisuospatialTestResult);
         aTestResult.setMealAttentionTestResult(mealAttentionTestResult);
         aTestResult.setMicrowaveExecuteTestResult(microwaveExecuteTestResult);
+        aTestResult.setTestResult(testResult);
         aTestResultRepository.save(aTestResult);
 
-        TestResult testResult = new TestResult();
-        testResult.setATestResult(aTestResult);
-        testResult.setTestSubject(testSubjectRepository.findById(Long.valueOf(testResultData.getPatientID())).orElse(null));
-        testResult.setTestStartTime(LocalDateTime.parse(testResultData.getStartTime(), formatter));
-        testResult.setTestEndTime(LocalDateTime.parse(testResultData.getEndTime(), formatter));
-        testResultRepository.save(testResult);
 
         return "ATestResult saved successfully";
     }
 
     @PostMapping("/b-test-result")
     public String addBTestResult(@RequestBody TestResultData testResultData){
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
+        TestResult testResult = new TestResult();
+        testResult.setTestSubject(testSubjectRepository.findById(Long.valueOf(testResultData.getPatientID())).orElse(null));
+        testResult.setTestStartTime(LocalDateTime.parse(testResultData.getStartTime(), formatter));
+        testResult.setTestEndTime(LocalDateTime.parse(testResultData.getEndTime(), formatter));
+        testResultRepository.save(testResult);
+
         PaintMemoryTestResult paintMemoryTestResult = new PaintMemoryTestResult();
         paintMemoryTestResult.setPaintMemoryResult1(testResultData.isPaintMemoryResult1());
         paintMemoryTestResult.setPaintMemoryResult2(testResultData.isPaintMemoryResult2());
@@ -215,7 +226,7 @@ public class APIController {
         washingMachineExecuteTestResultRepository.save(washingMachineExecuteTestResult);
 
         int logNum = 0;
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
         for(int i = 0; i < testResultData.getWashingMachineLog().size(); i++){
             ExecuteLog executeLog = new ExecuteLog();
             executeLog.setLogNum(Long.valueOf(logNum));
@@ -226,34 +237,38 @@ public class APIController {
             executeLogRepository.save(executeLog);
         }
 
+
         BTestResult bTestResult = new BTestResult();
         bTestResult.setPaintMemoryTestResult(paintMemoryTestResult);
         bTestResult.setDeskVisuospatialTestResult(deskVisuospatialTestResult);
         bTestResult.setCallAttentionTestResult(callAttentionTestResult);
         bTestResult.setWashingMachineExecuteTestResult(washingMachineExecuteTestResult);
+        bTestResult.setTestResult(testResult);
         bTestResultRepository.save(bTestResult);
-
-        TestResult testResult = new TestResult();
-        testResult.setBTestResult(bTestResult);
-        testResult.setTestSubject(testSubjectRepository.findById(Long.valueOf(testResultData.getPatientID())).orElse(null));
-        testResult.setTestStartTime(LocalDateTime.parse(testResultData.getStartTime(), formatter));
-        testResult.setTestEndTime(LocalDateTime.parse(testResultData.getEndTime(), formatter));
-        testResultRepository.save(testResult);
 
         return "BTestResult saved successfully";
     }
 
     @PostMapping("/c-test-result")
     public String addCTestResult(@RequestBody CTestData cTestData){
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
+        TestResult testResult = new TestResult();
+        testResult.setTestSubject(testSubjectRepository.findById(Long.valueOf(cTestData.getPatientID())).orElse(null));
+        testResult.setTestStartTime(LocalDateTime.parse(cTestData.getStartTime(), formatter));
+        testResult.setTestEndTime(LocalDateTime.parse(cTestData.getEndTime(), formatter));
+        testResultRepository.save(testResult);
+
         CTestResult cTestResult = new CTestResult();
         cTestResult.setAttentionScore(cTestData.getAttentionScore());
         cTestResult.setMemoryScore(cTestData.getMemoryScore());
         cTestResult.setVisuospatialScore(cTestData.getVisuospatialScore());
         cTestResult.setExecuteScore(cTestData.getExecuteScore());
+        cTestResult.setTestResult(testResult);
         cTestResultRepository.save(cTestResult);
 
         int logNum = 0;
-        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+
         for(int i = 0; i < cTestData.getAttentionLog().size(); i++){
             ExecuteLog executeLog = new ExecuteLog();
             executeLog.setLogNum(Long.valueOf(logNum));
@@ -283,13 +298,6 @@ public class APIController {
             executeLog.setCTestResult(cTestResult);
             executeLogRepository.save(executeLog);
         }
-
-        TestResult testResult = new TestResult();
-        testResult.setCTestResult(cTestResult);
-        testResult.setTestSubject(testSubjectRepository.findById(Long.valueOf(cTestData.getPatientID())).orElse(null));
-        testResult.setTestStartTime(LocalDateTime.parse(cTestData.getStartTime(), formatter));
-        testResult.setTestEndTime(LocalDateTime.parse(cTestData.getEndTime(), formatter));
-        testResultRepository.save(testResult);
 
         return "good";
     }
@@ -358,22 +366,6 @@ public class APIController {
         }
 
         return allTestResultDTOs;
-    }
-
-    private TestResultDTO convertToDto(TestResult testResult, String testSubjectName) {
-        ATestResultDTO aTestResultDTO = testResult.getATestResult() != null ? new ATestResultDTO(testResult.getATestResult()) : null;
-        BTestResultDTO bTestResultDTO = testResult.getBTestResult() != null ? new BTestResultDTO(testResult.getBTestResult()) : null;
-        CTestResultDTO cTestResultDTO = testResult.getCTestResult() != null ? new CTestResultDTO(testResult.getCTestResult()) : null;
-
-        return new TestResultDTO(
-                testResult.getId(),
-                testResult.getTestStartTime(),
-                testResult.getTestEndTime(),
-                testSubjectName,
-                aTestResultDTO,
-                bTestResultDTO,
-                cTestResultDTO
-        );
     }
 
 
