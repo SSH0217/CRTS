@@ -67,6 +67,7 @@ public class APIController {
     }
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Map<String, String> supervision, HttpServletResponse response) {
+        logger.info("Login endpoint hit");
         try {
             String loginId = supervision.get("username");
             String loginPw = supervision.get("password");
