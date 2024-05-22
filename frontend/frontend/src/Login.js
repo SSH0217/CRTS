@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Container, TextField, Button, Box, Typography } from '@mui/material';
+import { Container, TextField, Button, Box, Typography, Alert } from '@mui/material';
 
-function Login() {
+const Login = ({ setIsLoggedIn }) => {
   const [loginId, setUsername] = useState('');
   const [loginPw, setPassword] = useState('');
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError(''); // Reset the error message
     try {
       const response = await axios.post(
         '/api/login',
@@ -22,10 +24,16 @@ function Login() {
         }
       );
       if (response.status === 200) {
+        setIsLoggedIn(true);
         navigate('/dashboard');
       }
     } catch (error) {
-      console.error('Login failed', error);
+      if (error.response && error.response.status === 401) {
+        setError('Invalid credentials');
+      } else {
+        console.error('Login failed', error);
+        setError('An error occurred. Please try again.');
+      }
     }
   };
 
@@ -41,6 +49,7 @@ function Login() {
         <Typography variant="h4" component="h1" gutterBottom>
           CRTS
         </Typography>
+        {error && <Alert severity="error">{error}</Alert>}
         <form onSubmit={handleLogin}>
           <TextField
             variant="outlined"

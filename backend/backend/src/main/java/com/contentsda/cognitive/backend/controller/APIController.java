@@ -93,12 +93,12 @@ public class APIController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest){
         String loginId = loginRequest.getLoginId();
         String loginPw = loginRequest.getLoginPw();
 
         Supervision supervision = supervisionRepository.findByLoginId(loginId);
-        if (supervision == null && supervision.getLoginPw() == passwordEncoder.encode(loginPw)) {
+        if (supervision == null && !passwordEncoder.matches(loginPw, supervision.getLoginPw())) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(loginPw);
