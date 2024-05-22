@@ -1,5 +1,6 @@
 package com.contentsda.cognitive.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,7 @@ public class CTestResult {
 
     @OneToOne
     @JoinColumn(name = "test_result_id", unique = true)
+    @JsonBackReference
     private TestResult testResult;
 
     @Column(name = "memory_score", nullable = false)
