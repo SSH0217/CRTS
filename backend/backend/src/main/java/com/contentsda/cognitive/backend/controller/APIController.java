@@ -71,19 +71,22 @@ public class APIController {
             String loginId = supervision.get("username");
             String loginPw = supervision.get("password");
 
-            logger.info("Username: {}", loginId);
-            logger.info("Password: {}", loginPw);
+            logger.info("Received login attempt with username: {}", loginId);
+            logger.info("Received login attempt with password: {}", loginPw);
 
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginId, loginPw)
             );
             if (authentication.isAuthenticated()) {
+                logger.info("Authentication successful for username: {}", loginId);
                 return ResponseEntity.ok("Login successful");
             } else {
+                logger.warn("Authentication failed for username: {}", loginId);
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login failed");
             }
         } catch (AuthenticationException e) {
+            logger.error("Authentication exception for username: {}", e);
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Exception Login failed: " + e.getMessage());
         }
     }
