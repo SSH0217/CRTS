@@ -3,6 +3,8 @@ package com.contentsda.cognitive.backend.controller;
 import com.contentsda.cognitive.backend.entity.*;
 import com.contentsda.cognitive.backend.repository.*;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +59,7 @@ public class APIController {
     private DeviceRepository deviceRepository;
 
     private final AuthenticationManager authenticationManager;
+    private static final Logger logger = LoggerFactory.getLogger(APIController.class);
 
     @Autowired
     public APIController(AuthenticationManager authenticationManager) {
@@ -68,9 +71,9 @@ public class APIController {
             String loginId = supervision.get("username");
             String loginPw = supervision.get("password");
 
-            System.out.println("Username: " + loginId);
-            System.out.println("Password: " + loginPw);
-            
+            logger.info("Username: {}", loginId);
+            logger.info("Password: {}", loginPw);
+
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginId, loginPw)
             );
