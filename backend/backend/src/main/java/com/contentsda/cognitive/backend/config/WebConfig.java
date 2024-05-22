@@ -16,7 +16,7 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://localhost:3000", "https://crtstest.shop")  // 필요한 도메인을 여기에 추가합니다.
+                        .allowedOrigins("http://localhost:3000", "https://crtstest.shop")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
