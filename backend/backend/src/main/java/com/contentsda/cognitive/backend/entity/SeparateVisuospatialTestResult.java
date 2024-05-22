@@ -1,5 +1,6 @@
 package com.contentsda.cognitive.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -35,5 +36,6 @@ public class SeparateVisuospatialTestResult {
     private Integer separateTime;
 
     @OneToOne(mappedBy = "separateVisuospatialTestResult", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private ATestResult aTestResult;
 }

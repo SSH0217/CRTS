@@ -1,5 +1,6 @@
 package com.contentsda.cognitive.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class WashingMachineExecuteTestResult {
     private Integer washingMachineTime;
 
     @OneToOne(mappedBy = "washingMachineExecuteTestResult", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private BTestResult bTestResult;
 
     @OneToMany(mappedBy = "washingMachineExecuteTestResult", cascade = CascadeType.ALL, fetch = FetchType.LAZY)

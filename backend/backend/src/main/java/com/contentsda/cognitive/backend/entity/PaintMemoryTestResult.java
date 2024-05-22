@@ -1,5 +1,6 @@
 package com.contentsda.cognitive.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,5 +39,6 @@ public class PaintMemoryTestResult {
     private Integer rememberCorrectPaint;
 
     @OneToOne(mappedBy = "paintMemoryTestResult", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private BTestResult bTestResult;
 }

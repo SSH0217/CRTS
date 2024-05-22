@@ -1,5 +1,6 @@
 package com.contentsda.cognitive.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,6 @@ public class CallAttentionTestResult {
     private Integer callCount;
 
     @OneToOne(mappedBy = "callAttentionTestResult", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private BTestResult bTestResult;
 }
