@@ -96,11 +96,12 @@ public class APIController {
     public ResponseEntity<String> loginTest(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
         String loginId = loginRequest.getLoginId();
         String loginPw = loginRequest.getLoginPw();
+
         Supervision supervision = supervisionRepository.findByLoginId(loginId);
-        if (supervision == null) {
+        if (supervision == null && supervision.getLoginPw() == passwordEncoder.encode(loginPw)) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok("supervision");
+        return ResponseEntity.ok(loginPw);
     }
 
     @PostMapping("/a-test-result")
