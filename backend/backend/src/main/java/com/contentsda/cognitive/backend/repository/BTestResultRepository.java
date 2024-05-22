@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BTestResultRepository extends JpaRepository<BTestResult, Long> {
+    BTestResult findByTestResultId(Long testResultId);
 }

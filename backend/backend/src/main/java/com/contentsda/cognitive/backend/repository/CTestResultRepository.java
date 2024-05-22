@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CTestResultRepository extends JpaRepository<CTestResult, Long> {
+    CTestResult findByTestResultId(Long testResultId);
 }

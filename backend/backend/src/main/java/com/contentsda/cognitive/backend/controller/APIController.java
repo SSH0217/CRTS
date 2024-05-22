@@ -326,7 +326,6 @@ public class APIController {
     public List<TestResultDTO> allTestResult(@RequestParam Long supervisionId) {
         Supervision supervision = supervisionRepository.findById(supervisionId).orElse(null);
         if (supervision == null) {
-            // Supervision이 존재하지 않으면 빈 리스트를 반환하거나 예외를 던질 수 있습니다.
             return new ArrayList<>();
         }
 
@@ -336,7 +335,24 @@ public class APIController {
         for (TestSubject testSubject : testSubjectList) {
             List<TestResult> testResults = testResultRepository.findAllByTestSubjectId(testSubject.getId());
             for (TestResult testResult : testResults) {
-                TestResultDTO dto = convertToDto(testResult, testSubject.getName());
+                ATestResult aTestResult = aTestResultRepository.findByTestResultId(testResult.getId());
+                BTestResult bTestResult = bTestResultRepository.findByTestResultId(testResult.getId());
+                CTestResult cTestResult = cTestResultRepository.findByTestResultId(testResult.getId());
+
+                ATestResultDTO aTestResultDTO = aTestResult != null ? new ATestResultDTO(aTestResult) : null;
+                BTestResultDTO bTestResultDTO = bTestResult != null ? new BTestResultDTO(bTestResult) : null;
+                CTestResultDTO cTestResultDTO = cTestResult != null ? new CTestResultDTO(cTestResult) : null;
+
+                TestResultDTO dto = new TestResultDTO(
+                        testResult.getId(),
+                        testResult.getTestStartTime(),
+                        testResult.getTestEndTime(),
+                        testSubject.getName(),
+                        aTestResultDTO,
+                        bTestResultDTO,
+                        cTestResultDTO
+                );
+
                 allTestResultDTOs.add(dto);
             }
         }
