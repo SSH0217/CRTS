@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Container, TextField, Button, Box, Typography } from '@mui/material';
 
 function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [loginId, setUsername] = useState('');
+  const [loginPw, setPassword] = useState('');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -13,7 +13,7 @@ function Login() {
     try {
       const response = await axios.post(
         '/api/login',
-        { username, password },
+        { loginId, loginPw },
         {
           headers: {
             'Content-Type': 'application/json'
@@ -52,7 +52,7 @@ function Login() {
             name="username"
             autoComplete="username"
             autoFocus
-            value={username}
+            value={loginId}
             onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
@@ -65,7 +65,7 @@ function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
-            value={password}
+            value={loginPw}
             onChange={(e) => setPassword(e.target.value)}
           />
           <Button

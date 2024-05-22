@@ -66,11 +66,11 @@ public class APIController {
         this.authenticationManager = authenticationManager;
     }
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> supervision, HttpServletResponse response) {
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         logger.info("Login endpoint hit");
         try {
-            String loginId = supervision.get("username");
-            String loginPw = supervision.get("password");
+            String loginId = loginRequest.getLoginId();
+            String loginPw = loginRequest.getLoginPw();
 
             logger.info("Received login attempt with username: {}", loginId);
             logger.info("Received login attempt with password: {}", loginPw);
@@ -218,14 +218,6 @@ public class APIController {
         return "patientInfo sent successfully";
     }
 
-    @GetMapping("/{loginId}")
-    public ResponseEntity<Supervision> getSupervisionByLoginId(@PathVariable String loginId) {
-        Supervision supervision = supervisionRepository.findByLoginId(loginId);
-        if (supervision == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(supervision);
-    }
     @GetMapping("/get-test")
     public TestResultData getTest() {
         TestResultData testResultData = new TestResultData();
