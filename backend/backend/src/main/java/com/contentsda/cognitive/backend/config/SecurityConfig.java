@@ -42,6 +42,10 @@ public class SecurityConfig {
                         .successHandler((request, response, authentication) -> {
                             response.setStatus(HttpServletResponse.SC_OK);
                         })
+                        .failureHandler((request, response, exception) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.getWriter().write("Authentication Failed: " + exception.getMessage());
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout
