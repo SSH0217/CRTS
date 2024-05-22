@@ -323,7 +323,7 @@ public class APIController {
     }
 
     @GetMapping("/all-test-result")
-    public List<TestResultDTO> allTestResult(@RequestParam Long supervisionId){
+    public List<TestResultDTO> allTestResult(@RequestParam Long supervisionId) {
         Supervision supervision = supervisionRepository.findById(supervisionId).orElse(null);
         if (supervision == null) {
             // Supervision이 존재하지 않으면 빈 리스트를 반환하거나 예외를 던질 수 있습니다.
@@ -345,13 +345,21 @@ public class APIController {
     }
 
     private TestResultDTO convertToDto(TestResult testResult, String testSubjectName) {
+        ATestResultDTO aTestResultDTO = testResult.getATestResult() != null ? new ATestResultDTO(testResult.getATestResult()) : null;
+        BTestResultDTO bTestResultDTO = testResult.getBTestResult() != null ? new BTestResultDTO(testResult.getBTestResult()) : null;
+        CTestResultDTO cTestResultDTO = testResult.getCTestResult() != null ? new CTestResultDTO(testResult.getCTestResult()) : null;
+
         return new TestResultDTO(
                 testResult.getId(),
                 testResult.getTestStartTime(),
                 testResult.getTestEndTime(),
-                testSubjectName
+                testSubjectName,
+                aTestResultDTO,
+                bTestResultDTO,
+                cTestResultDTO
         );
     }
+
 
     /////////////////////////이 밑은 테스트용
     @GetMapping("/get-test")

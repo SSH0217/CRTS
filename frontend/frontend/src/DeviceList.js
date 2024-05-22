@@ -31,8 +31,8 @@ const DeviceList = ({ supervision }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Device Number</TableCell>
-              <TableCell>Device Name</TableCell>
+              <TableCell>디바이스 번호</TableCell>
+              <TableCell>디바이스 이름</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

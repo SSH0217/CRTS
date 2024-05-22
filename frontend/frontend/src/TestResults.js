@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Typography, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, CircularProgress } from '@mui/material';
 
 const TestResults = ({ supervision }) => {
   const [testResults, setTestResults] = useState([]);
@@ -41,16 +41,32 @@ const TestResults = ({ supervision }) => {
       <Typography variant="h4" gutterBottom>
         검사 결과
       </Typography>
-      <List>
-        {testResults.map((result) => (
-          <ListItem key={result.id}>
-            <ListItemText
-              primary={`Test Subject: ${result.testSubjectName}`}
-              secondary={`Start: ${new Date(result.testStartTime).toLocaleString()} - End: ${new Date(result.testEndTime).toLocaleString()}`}
-            />
-          </ListItem>
-        ))}
-      </List>
+      <TableContainer component={Paper}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>피검사자</TableCell>
+              <TableCell>테스트 시작 시각</TableCell>
+              <TableCell>테스트 종료 시각</TableCell>
+              <TableCell>테스트 종류</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {testResults.map((result) => (
+              <TableRow key={result.id}>
+                <TableCell>{result.testSubjectName}</TableCell>
+                <TableCell>{new Date(result.testStartTime).toLocaleString()}</TableCell>
+                <TableCell>{new Date(result.testEndTime).toLocaleString()}</TableCell>
+                <TableCell>
+                  {result.aTestResult && <Typography>A Test</Typography>}
+                  {result.bTestResult && <Typography>B Test</Typography>}
+                  {result.cTestResult && <Typography>C Test</Typography>}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Box>
   );
 };

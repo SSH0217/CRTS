@@ -31,10 +31,10 @@ const ManageUsers = ({ supervision }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell>Age</TableCell>
-              <TableCell>Gender</TableCell>
-              <TableCell>Created Date</TableCell>
+              <TableCell>이름</TableCell>
+              <TableCell>나이</TableCell>
+              <TableCell>성별</TableCell>
+              <TableCell>생성일</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -43,7 +43,7 @@ const ManageUsers = ({ supervision }) => {
                 <TableCell>{patient.name}</TableCell>
                 <TableCell>{patient.age}</TableCell>
                 <TableCell>{patient.gender}</TableCell>
-                <TableCell>{patient.createdDate}</TableCell>
+                <TableCell>{new Date(patient.createdDate).toLocaleString()}</TableCell>
               </TableRow>
             ))}
           </TableBody>

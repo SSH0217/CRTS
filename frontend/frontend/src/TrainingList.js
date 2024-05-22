@@ -27,8 +27,8 @@ const TrainingList = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Content Name</TableCell>
-              <TableCell>Content Explained</TableCell>
+              <TableCell>훈련 이름</TableCell>
+              <TableCell>훈련 설명</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
