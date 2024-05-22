@@ -67,6 +67,10 @@ public class APIController {
         try {
             String loginId = supervision.get("username");
             String loginPw = supervision.get("password");
+
+            System.out.println("Username: " + loginId);
+            System.out.println("Password: " + loginPw);
+            
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginId, loginPw)
             );
