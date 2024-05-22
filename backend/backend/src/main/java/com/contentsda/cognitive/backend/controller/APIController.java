@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -57,6 +59,8 @@ public class APIController {
     private TestSubjectRepository testSubjectRepository;
     @Autowired
     private DeviceRepository deviceRepository;
+    @Autowired
+    private ContentsRepository contentsRepository;
 
     private final AuthenticationManager authenticationManager;
     private static final Logger logger = LoggerFactory.getLogger(APIController.class);
@@ -224,15 +228,18 @@ public class APIController {
     }
 
     @GetMapping("/patient-info")
-    public String patientInfo(){
-
-
-        return "patientInfo sent successfully";
+    public List<TestSubject> patientInfo(@RequestBody Supervision supervision){
+        return testSubjectRepository.findAllBySupervisionId(supervision.getId());
     }
 
     @GetMapping("/contents-list")
-    public String contentsList(){
-        return "contentsList sent successfully";
+    public List<Contents> contentsList(){
+        return contentsRepository.findAll();
+    }
+
+    @GetMapping("/device-list")
+    public List<Device> deviceList(@RequestBody Supervision supervision){
+        return deviceRepository.findAllByOrganizationId(supervision.getOrganization().getId());
     }
 
     @GetMapping("/get-test")
@@ -240,6 +247,75 @@ public class APIController {
         TestResultData testResultData = new TestResultData();
         testResultData.setTestType("A");
         return testResultData;
+    }
+
+    @PostMapping("contents-list-push")
+    public String contentsListPush(){
+        Contents content1 = new Contents();
+        content1.setContentsName("오락실 농구");
+        content1.setContentsExplained("공을 잡아 던져 공을 골대에 넣는 훈련");
+        content1.setCreatedDate(LocalDateTime.now());
+        contentsRepository.save(content1);
+
+        Contents content2 = new Contents();
+        content2.setContentsName("공간지각 훈련");
+        content2.setContentsExplained("큐브 바깥 상황을 보고 큐브 내에서 맞는 색상을 찾는 훈련");
+        content2.setCreatedDate(LocalDateTime.now());
+        contentsRepository.save(content2);
+
+        Contents content3 = new Contents();
+        content3.setContentsName("청기백기");
+        content3.setContentsExplained("지시에 따라 청기 또는 백기를 올리거나 내리는 훈련");
+        content3.setCreatedDate(LocalDateTime.now());
+        contentsRepository.save(content3);
+
+        Contents content4 = new Contents();
+        content4.setContentsName("두더지 잡기");
+        content4.setContentsExplained("무작위로 올라오는 두더지를 때려 들어가게하는 훈련");
+        content4.setCreatedDate(LocalDateTime.now());
+        contentsRepository.save(content4);
+
+        Contents content5 = new Contents();
+        content5.setContentsName("도형 골라내기");
+        content5.setContentsExplained("도형과 맞는 모양의 구멍을 찾아 도형을 넣는 훈련");
+        content5.setCreatedDate(LocalDateTime.now());
+        contentsRepository.save(content5);
+
+        Contents content6 = new Contents();
+        content6.setContentsName("가위바위보 골키퍼");
+        content6.setContentsExplained("골대로 날아오는 공에 붙어있는 가위바위보를 확인해 이길 수 있는 손 모양으로 공을 처내는 훈련");
+        content6.setCreatedDate(LocalDateTime.now());
+        contentsRepository.save(content6);
+
+        Contents content7 = new Contents();
+        content7.setContentsName("가위바위보 골키퍼");
+        content7.setContentsExplained("날아오는 상자에 붙어있는 가위바위보를 지시에 맞게 비기거나 이기거나 지는 손 모양으로 쳐내는 훈련");
+        content7.setCreatedDate(LocalDateTime.now());
+        contentsRepository.save(content7);
+
+        Contents content8 = new Contents();
+        content8.setContentsName("그립미션");
+        content8.setContentsExplained("날아오는 오브젝트를 카테고리에 맞게 잡아내는 훈련");
+        content8.setCreatedDate(LocalDateTime.now());
+        contentsRepository.save(content8);
+
+        return "good";
+    }
+    @PostMapping("device-push")
+    public String devicePush(){
+        Device device = new Device();
+        device.setDeviceNum(1);
+        device.setDeviceName("Quest3");
+        device.setOrganization(organizationRepository.findById(Long.valueOf(2)).get());
+        deviceRepository.save(device);
+
+        Device device2 = new Device();
+        device2.setDeviceNum(2);
+        device2.setDeviceName("Quest3");
+        device2.setOrganization(organizationRepository.findById(Long.valueOf(2)).get());
+        deviceRepository.save(device2);
+
+        return "good";
     }
 
     @Autowired
