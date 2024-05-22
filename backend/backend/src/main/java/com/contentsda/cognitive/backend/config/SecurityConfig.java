@@ -65,7 +65,6 @@ public class SecurityConfig {
         authenticationManagerBuilder.userDetailsService(supervisionService).passwordEncoder(passwordEncoder());
         return authenticationManagerBuilder.build();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

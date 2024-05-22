@@ -14,6 +14,12 @@ function Login() {
       const response = await axios.post(
         '/api/login',
         { username, password },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true // 자격 증명 포함 (필요 시)
+        }
       );
       if (response.status === 200) {
         navigate('/dashboard');
