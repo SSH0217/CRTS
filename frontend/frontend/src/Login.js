@@ -25,7 +25,7 @@ const Login = ({ setIsLoggedIn, setSupervision }) => {
       );
       if (response.status === 200) {
         const supervisionResponse = await axios.get('/api/supervision-info', {
-          params: { loginId },
+          params: { loginId, supervisionLoginId: loginId },
           headers: {
             'Content-Type': 'application/json'
           },

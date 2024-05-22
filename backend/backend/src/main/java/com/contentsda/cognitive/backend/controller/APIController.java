@@ -19,8 +19,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -256,6 +255,22 @@ public class APIController {
         return deviceRepository.findAllByOrganizationId(supervision.getOrganization().getId());
     }
 
+    @GetMapping("/all-test-result")
+    public List<TestResultDTO> allTestResult(@RequestParam Long supervisionId){
+        Supervision supervision = supervisionRepository.findById(supervisionId).orElse(null);
+        if (supervision == null) {
+            return Collections.emptyList();
+        }
+        return testResultRepository.findAllBySupervisionId(supervision.getId())
+                .stream()
+                .map(testResult -> new TestResultDTO(
+                        testResult.getId(),
+                        testResult.getTestStartTime(),
+                        testResult.getTestEndTime(),
+                        testResult.getTestSubject().getName()))
+                .collect(Collectors.toList());
+    }
+
     /////////////////////////이 밑은 테스트용
     @GetMapping("/get-test")
     public TestResultData getTest() {
@@ -263,7 +278,6 @@ public class APIController {
         testResultData.setTestType("A");
         return testResultData;
     }
-
     @PostMapping("contents-list-push")
     public String contentsListPush(){
         Contents content1 = new Contents();
@@ -332,7 +346,6 @@ public class APIController {
 
         return "good";
     }
-
     @Autowired
     private PasswordEncoder passwordEncoder;
     @PostMapping("test-insert")
