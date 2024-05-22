@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Table(name = "c_test_result")
 @Getter
@@ -28,5 +30,8 @@ public class CTestResult {
 
     @Column(name = "execute_score", nullable = false)
     private Integer executeScore;
+
+    @OneToMany(mappedBy = "cTestResult", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<ExecuteLog> executeLogList;
 
 }

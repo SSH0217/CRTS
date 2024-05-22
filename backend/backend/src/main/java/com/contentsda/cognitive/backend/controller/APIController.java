@@ -165,6 +165,12 @@ public class APIController {
         aTestResult.setMicrowaveExecuteTestResult(microwaveExecuteTestResult);
         aTestResultRepository.save(aTestResult);
 
+        TestResult testResult = new TestResult();
+        testResult.setATestResult(aTestResult);
+        testResult.setTestSubject(testSubjectRepository.findById(Long.valueOf(testResultData.getPatientID())).orElse(null));
+        testResult.setTestStartTime(LocalDateTime.parse(testResultData.getStartTime(), formatter));
+        testResult.setTestEndTime(LocalDateTime.parse(testResultData.getEndTime(), formatter));
+        testResultRepository.save(testResult);
 
         return "ATestResult saved successfully";
     }
@@ -225,7 +231,63 @@ public class APIController {
         bTestResult.setWashingMachineExecuteTestResult(washingMachineExecuteTestResult);
         bTestResultRepository.save(bTestResult);
 
+        TestResult testResult = new TestResult();
+        testResult.setBTestResult(bTestResult);
+        testResult.setTestSubject(testSubjectRepository.findById(Long.valueOf(testResultData.getPatientID())).orElse(null));
+        testResult.setTestStartTime(LocalDateTime.parse(testResultData.getStartTime(), formatter));
+        testResult.setTestEndTime(LocalDateTime.parse(testResultData.getEndTime(), formatter));
+        testResultRepository.save(testResult);
+
         return "BTestResult saved successfully";
+    }
+
+    @PostMapping("/c-test-result")
+    public String addCTestResult(@RequestBody CTestData cTestData){
+        CTestResult cTestResult = new CTestResult();
+        cTestResult.setAttentionScore(cTestData.getAttentionScore());
+        cTestResult.setMemoryScore(cTestData.getMemoryScore());
+        cTestResult.setVisuospatialScore(cTestData.getVisuospatialScore());
+        cTestResult.setExecuteScore(cTestData.getExecuteScore());
+        int logNum = 0;
+        DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+        for(int i = 0; i < cTestData.getAttentionLog().size(); i++){
+            ExecuteLog executeLog = new ExecuteLog();
+            executeLog.setLogNum(Long.valueOf(logNum));
+            logNum++;
+            executeLog.setLog(cTestData.getAttentionLog().get(i));
+            executeLog.setLogTime(LocalDateTime.parse(cTestData.getAttentionLogTime().get(i), formatter));
+            executeLog.setCTestResult(cTestResult);
+            executeLogRepository.save(executeLog);
+        }
+        logNum = 0;
+        for(int i = 0; i < cTestData.getVisuospatialLog().size(); i++){
+            ExecuteLog executeLog = new ExecuteLog();
+            executeLog.setLogNum(Long.valueOf(logNum));
+            logNum++;
+            executeLog.setLog(cTestData.getVisuospatialLog().get(i));
+            executeLog.setLogTime(LocalDateTime.parse(cTestData.getVisuospatialLogTime().get(i), formatter));
+            executeLog.setCTestResult(cTestResult);
+            executeLogRepository.save(executeLog);
+        }
+        logNum = 0;
+        for(int i = 0; i < cTestData.getExecuteLog().size(); i++){
+            ExecuteLog executeLog = new ExecuteLog();
+            executeLog.setLogNum(Long.valueOf(logNum));
+            logNum++;
+            executeLog.setLog(cTestData.getExecuteLog().get(i));
+            executeLog.setLogTime(LocalDateTime.parse(cTestData.getExecuteLogTime().get(i), formatter));
+            executeLog.setCTestResult(cTestResult);
+            executeLogRepository.save(executeLog);
+        }
+
+        TestResult testResult = new TestResult();
+        testResult.setCTestResult(cTestResult);
+        testResult.setTestSubject(testSubjectRepository.findById(Long.valueOf(cTestData.getPatientID())).orElse(null));
+        testResult.setTestStartTime(LocalDateTime.parse(cTestData.getStartTime(), formatter));
+        testResult.setTestEndTime(LocalDateTime.parse(cTestData.getEndTime(), formatter));
+        testResultRepository.save(testResult);
+
+        return "good";
     }
 
     @GetMapping("/supervision-info")

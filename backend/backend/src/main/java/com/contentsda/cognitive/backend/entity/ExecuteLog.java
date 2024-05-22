@@ -32,5 +32,11 @@ public class ExecuteLog {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "washing_machine_execute_test_result_id")
+    @JsonBackReference
     private WashingMachineExecuteTestResult washingMachineExecuteTestResult;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "c_test_log")
+    @JsonBackReference
+    private CTestResult cTestResult;
 }
