@@ -50,6 +50,8 @@ public class APIController {
     private WashingMachineExecuteTestResultRepository washingMachineExecuteTestResultRepository;
 
     @Autowired
+    private CTestResultRepository cTestResultRepository;
+    @Autowired
     private ExecuteLogRepository executeLogRepository;
 
     @Autowired
@@ -248,6 +250,8 @@ public class APIController {
         cTestResult.setMemoryScore(cTestData.getMemoryScore());
         cTestResult.setVisuospatialScore(cTestData.getVisuospatialScore());
         cTestResult.setExecuteScore(cTestData.getExecuteScore());
+        cTestResultRepository.save(cTestResult);
+
         int logNum = 0;
         DateTimeFormatter formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
         for(int i = 0; i < cTestData.getAttentionLog().size(); i++){

@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Box, Typography, List, ListItem, ListItemText, CircularProgress } from '@mui/material';
 
-const TestResults = () => {
+const TestResults = ({ supervision }) => {
   const [testResults, setTestResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const supervisionId = 1; // 실제 사용 시에는 적절한 supervisionId를 사용하세요
 
   useEffect(() => {
     const fetchTestResults = async () => {
+      if (!supervision) return;
       try {
         const response = await axios.get('/api/all-test-result', {
-          params: { supervisionId },
+          params: { supervisionId: supervision.id },
           headers: {
             'Content-Type': 'application/json'
           }
@@ -26,7 +26,7 @@ const TestResults = () => {
     };
 
     fetchTestResults();
-  }, [supervisionId]);
+  }, [supervision]);
 
   if (loading) {
     return <CircularProgress />;

@@ -26,7 +26,7 @@ const App = () => {
                   <Route path="/dashboard" element={<Dashboard supervision={supervision} />} />
                   <Route path="/manage-users" element={<ManageUsers supervision={supervision} />} />
                   <Route path="/training-list" element={<TrainingList />} />
-                  <Route path="/test-results" element={<TestResults />} />
+                  <Route path="/test-results" element={<TestResults supervision={supervision} />} />
                   <Route path="/device-list" element={<DeviceList supervision={supervision} />} />
                   <Route path="*" element={<Navigate to="/dashboard" />} />
                 </Routes>
