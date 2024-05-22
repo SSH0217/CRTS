@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface TestResultRepository extends JpaRepository<TestResult, Long> {
-    List<TestResult> findAllBySupervisionId(Long id);
+    List<TestResult> findAllByTestSubjectId(Long testSubjectId);
 }

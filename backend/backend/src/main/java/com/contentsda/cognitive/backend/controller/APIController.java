@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -259,16 +260,31 @@ public class APIController {
     public List<TestResultDTO> allTestResult(@RequestParam Long supervisionId){
         Supervision supervision = supervisionRepository.findById(supervisionId).orElse(null);
         if (supervision == null) {
-            return Collections.emptyList();
+            // Supervision이 존재하지 않으면 빈 리스트를 반환하거나 예외를 던질 수 있습니다.
+            return new ArrayList<>();
         }
-        return testResultRepository.findAllBySupervisionId(supervision.getId())
-                .stream()
-                .map(testResult -> new TestResultDTO(
-                        testResult.getId(),
-                        testResult.getTestStartTime(),
-                        testResult.getTestEndTime(),
-                        testResult.getTestSubject().getName()))
-                .collect(Collectors.toList());
+
+        List<TestSubject> testSubjectList = testSubjectRepository.findAllBySupervisionId(supervision.getId());
+        List<TestResultDTO> allTestResultDTOs = new ArrayList<>();
+
+        for (TestSubject testSubject : testSubjectList) {
+            List<TestResult> testResults = testResultRepository.findAllByTestSubjectId(testSubject.getId());
+            for (TestResult testResult : testResults) {
+                TestResultDTO dto = convertToDto(testResult, testSubject.getName());
+                allTestResultDTOs.add(dto);
+            }
+        }
+
+        return allTestResultDTOs;
+    }
+
+    private TestResultDTO convertToDto(TestResult testResult, String testSubjectName) {
+        return new TestResultDTO(
+                testResult.getId(),
+                testResult.getTestStartTime(),
+                testResult.getTestEndTime(),
+                testSubjectName
+        );
     }
 
     /////////////////////////이 밑은 테스트용
