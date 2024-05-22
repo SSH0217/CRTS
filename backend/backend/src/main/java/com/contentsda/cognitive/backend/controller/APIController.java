@@ -92,6 +92,17 @@ public class APIController {
         }
     }
 
+    @PostMapping("/login-test")
+    public ResponseEntity<String> loginTest(@RequestBody LoginRequest loginRequest, HttpServletResponse response){
+        String loginId = loginRequest.getLoginId();
+        String loginPw = loginRequest.getLoginPw();
+        Supervision supervision = supervisionRepository.findByLoginId(loginId);
+        if (supervision == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok("supervision");
+    }
+
     @PostMapping("/a-test-result")
     public String addATestResult(@RequestBody TestResultData testResultData){
         MartMemoryTestResult martMemoryTestResult = new MartMemoryTestResult();
