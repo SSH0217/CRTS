@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -227,9 +228,18 @@ public class APIController {
         return "BTestResult saved successfully";
     }
 
+    @GetMapping("/supervision-info")
+    public ResponseEntity<Supervision> supervisionInfo(@RequestParam String supervisionLoginId){
+        Supervision supervision = supervisionRepository.findByLoginId(supervisionLoginId);
+        if (supervision == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(supervision);
+    }
+
     @GetMapping("/patient-info")
-    public List<TestSubject> patientInfo(@RequestBody Supervision supervision){
-        return testSubjectRepository.findAllBySupervisionId(supervision.getId());
+    public List<TestSubject> patientInfo(@RequestParam Long supervisionId) {
+        return testSubjectRepository.findAllBySupervisionId(supervisionId);
     }
 
     @GetMapping("/contents-list")
@@ -238,10 +248,15 @@ public class APIController {
     }
 
     @GetMapping("/device-list")
-    public List<Device> deviceList(@RequestBody Supervision supervision){
+    public List<Device> deviceList(@RequestParam Long supervisionId) {
+        Supervision supervision = supervisionRepository.findById(supervisionId).orElse(null);
+        if (supervision == null) {
+            return Collections.emptyList();
+        }
         return deviceRepository.findAllByOrganizationId(supervision.getOrganization().getId());
     }
 
+    /////////////////////////이 밑은 테스트용
     @GetMapping("/get-test")
     public TestResultData getTest() {
         TestResultData testResultData = new TestResultData();

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Container, TextField, Button, Box, Typography, Alert } from '@mui/material';
 
-const Login = ({ setIsLoggedIn }) => {
+const Login = ({ setIsLoggedIn, setSupervision }) => {
   const [loginId, setUsername] = useState('');
   const [loginPw, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -24,6 +24,18 @@ const Login = ({ setIsLoggedIn }) => {
         }
       );
       if (response.status === 200) {
+        const supervisionResponse = await axios.get('/api/supervision-info', {
+          params: { loginId },
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          withCredentials: true
+        });
+
+        if (supervisionResponse.status === 200) {
+          setSupervision(supervisionResponse.data); // Supervision 데이터 상태로 설정
+        }
+
         setIsLoggedIn(true);
         navigate('/dashboard');
       }
