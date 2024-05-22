@@ -1,5 +1,6 @@
 package com.contentsda.cognitive.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,6 +24,7 @@ public class TestResult {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "test_subject")
+    @JsonBackReference
     private TestSubject testSubject;
 
     @OneToOne(mappedBy = "testResult", cascade = CascadeType.ALL)

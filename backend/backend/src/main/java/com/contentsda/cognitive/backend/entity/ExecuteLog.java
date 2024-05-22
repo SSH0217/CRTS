@@ -1,5 +1,6 @@
 package com.contentsda.cognitive.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,7 @@ public class ExecuteLog {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "microwave_execute_test_result_id")
+    @JsonBackReference
     private MicrowaveExecuteTestResult microwaveExecuteTestResult;
 
     @ManyToOne(fetch = FetchType.LAZY)
