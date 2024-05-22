@@ -10,7 +10,7 @@ import TestResults from './TestResults';
 import DeviceList from './DeviceList';
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <Router>

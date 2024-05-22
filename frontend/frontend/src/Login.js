@@ -27,6 +27,9 @@ const Login = ({ setIsLoggedIn }) => {
         setIsLoggedIn(true);
         navigate('/dashboard');
       }
+      else {
+        setError('아이디 또는 비밀번호 오류');
+      }
     } catch (error) {
       if (error.response && error.response.status === 401) {
         setError('Invalid credentials');
