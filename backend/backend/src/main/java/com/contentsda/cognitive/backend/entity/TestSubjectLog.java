@@ -1,5 +1,6 @@
 package com.contentsda.cognitive.backend.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,5 +27,6 @@ public class TestSubjectLog {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "test_subject_id")
+    @JsonBackReference
     private TestSubject testSubject;
 }
