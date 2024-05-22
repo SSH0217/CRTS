@@ -218,6 +218,14 @@ public class APIController {
         return "patientInfo sent successfully";
     }
 
+    @GetMapping("/{loginId}")
+    public ResponseEntity<Supervision> getSupervisionByLoginId(@PathVariable String loginId) {
+        Supervision supervision = supervisionRepository.findByLoginId(loginId);
+        if (supervision == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(supervision);
+    }
     @GetMapping("/get-test")
     public TestResultData getTest() {
         TestResultData testResultData = new TestResultData();
