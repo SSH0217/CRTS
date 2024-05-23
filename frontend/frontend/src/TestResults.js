@@ -196,7 +196,7 @@ const TestResults = ({ supervision }) => {
                             <TableRow key={key}>
                               <TableCell>{fieldNames[key] || key}</TableCell> {/* 필드 이름 매핑 */}
                               <TableCell>
-                                {typeof value === 'boolean' ? (value ? '성공' : '실패') : (Array.isArray(value) ? JSON.stringify(value) : value)}
+                                {typeof value === 'boolean' ? (value ? '성공' : '실패') : (typeof value === 'object' ? JSON.stringify(value) : value)}
                               </TableCell>
                             </TableRow>
                           ))}

@@ -486,7 +486,7 @@ public class APIController {
     }
 
     @GetMapping("/c-test-result-detail")
-    public List<LogDTO> cTestResultDetail(@RequestParam Long id){
+    public CTestResultDetail cTestResultDetail(@RequestParam Long id){
         CTestResult cTestResult = cTestResultRepository.findById(id).orElse(null);
         List<ExecuteLog> executeLogList = cTestResult.getExecuteLogList();
         List<LogDTO> logDTOList = new ArrayList<>();
@@ -497,7 +497,14 @@ public class APIController {
             logDTO.setLog(executeLog.getLog());
             logDTOList.add(logDTO);
         }
-        return logDTOList;
+        CTestResultDetail cTestResultDetail = new CTestResultDetail();
+        cTestResultDetail.setMemoryScore(cTestResult.getMemoryScore());
+        cTestResultDetail.setAttentionScore(cTestResult.getAttentionScore());
+        cTestResultDetail.setExecuteScore(cTestResult.getExecuteScore());
+        cTestResultDetail.setVisuospatialScore(cTestResult.getVisuospatialScore());
+        cTestResultDetail.setLogDTOList(logDTOList);
+
+        return cTestResultDetail;
     }
 
     /////////////////////////이 밑은 테스트용
