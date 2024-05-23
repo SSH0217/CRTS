@@ -114,9 +114,11 @@ const ManageUsers = ({ supervision }) => {
       <Typography variant="h4" gutterBottom>
         피검사자 관리
       </Typography>
-      <Button variant="contained" color="primary" onClick={handleAddOpen} sx={{ mb: 2 }}>
-        피검사자 추가
-      </Button>
+      <Box display="flex" justifyContent="flex-end" sx={{ mb: 2 }}>
+        <Button variant="contained" color="primary" onClick={handleAddOpen}>
+          피검사자 추가
+        </Button>
+      </Box>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -132,7 +134,7 @@ const ManageUsers = ({ supervision }) => {
               <TableRow key={patient.id} onClick={() => handleOpen(patient)} style={{ cursor: 'pointer' }}>
                 <TableCell>{patient.name}</TableCell>
                 <TableCell>{patient.age}</TableCell>
-                <TableCell>{patient.gender}</TableCell>
+                <TableCell>{patient.gender === 'male' ? '남성' : '여성'}</TableCell>
                 <TableCell>{new Date(patient.createdDate).toLocaleString()}</TableCell>
               </TableRow>
             ))}
@@ -156,7 +158,7 @@ const ManageUsers = ({ supervision }) => {
                 이름: {selectedPatient.name}
               </Typography>
               <Typography>나이: {selectedPatient.age}</Typography>
-              <Typography>성별: {selectedPatient.gender}</Typography>
+              <Typography>성별: {selectedPatient.gender === 'male' ? '남성' : '여성'}</Typography>
               <Typography>생성일: {new Date(selectedPatient.createdDate).toLocaleString()}</Typography>
 
               <FormControl fullWidth sx={{ mt: 2 }}>

@@ -80,7 +80,7 @@ const Dashboard = ({ supervision }) => {
 
     const datasets = [
       {
-        label: 'ATest Memory Score',
+        label: 'ATest 기억력 점수',
         data: labels.map(label => {
           const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.atestResult);
           return result ? result.details.memoryResult1 : null;
@@ -88,7 +88,7 @@ const Dashboard = ({ supervision }) => {
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
       {
-        label: 'BTest Memory Score',
+        label: 'BTest 기억력 점수',
         data: labels.map(label => {
           const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.btestResult);
           return result ? result.details.memoryResult1 : null;
@@ -96,7 +96,7 @@ const Dashboard = ({ supervision }) => {
         backgroundColor: 'rgba(54, 162, 235, 0.5)',
       },
       {
-        label: 'CTest Memory Score',
+        label: 'CTest 기억력 점수',
         data: labels.map(label => {
           const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.ctestResult);
           return result ? result.ctestResult.memoryScore : null;
@@ -104,7 +104,7 @@ const Dashboard = ({ supervision }) => {
         backgroundColor: 'rgba(75, 192, 192, 0.5)',
       },
       {
-        label: 'ATest Visuospatial Score',
+        label: 'ATest 시공간 능력 점수',
         data: labels.map(label => {
           const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.atestResult);
           return result ? result.details.visuospatialCount : null;
@@ -112,7 +112,7 @@ const Dashboard = ({ supervision }) => {
         backgroundColor: 'rgba(255, 206, 86, 0.5)',
       },
       {
-        label: 'BTest Visuospatial Score',
+        label: 'BTest 시공간 능력 점수',
         data: labels.map(label => {
           const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.btestResult);
           return result ? result.details.visuospatialCount : null;
@@ -120,7 +120,7 @@ const Dashboard = ({ supervision }) => {
         backgroundColor: 'rgba(153, 102, 255, 0.5)',
       },
       {
-        label: 'CTest Visuospatial Score',
+        label: 'CTest 시공간 능력 점수',
         data: labels.map(label => {
           const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.ctestResult);
           return result ? result.ctestResult.visuospatialScore : null;
@@ -128,7 +128,7 @@ const Dashboard = ({ supervision }) => {
         backgroundColor: 'rgba(255, 159, 64, 0.5)',
       },
       {
-        label: 'ATest Attention Score',
+        label: 'ATest 주의력 점수',
         data: labels.map(label => {
           const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.atestResult);
           return result ? result.details.attentionCount : null;
@@ -136,7 +136,7 @@ const Dashboard = ({ supervision }) => {
         backgroundColor: 'rgba(75, 192, 192, 0.5)',
       },
       {
-        label: 'BTest Attention Score',
+        label: 'BTest 주의력 점수',
         data: labels.map(label => {
           const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.btestResult);
           return result ? result.details.attentionCount : null;
@@ -144,7 +144,7 @@ const Dashboard = ({ supervision }) => {
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
       {
-        label: 'CTest Attention Score',
+        label: 'CTest 주의력 점수',
         data: labels.map(label => {
           const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.ctestResult);
           return result ? result.ctestResult.attentionScore : null;
@@ -152,7 +152,7 @@ const Dashboard = ({ supervision }) => {
         backgroundColor: 'rgba(54, 162, 235, 0.5)',
       },
       {
-        label: 'ATest Execute Score',
+        label: 'ATest 집행기능 경과 시간',
         data: labels.map(label => {
           const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.atestResult);
           return result ? result.details.executeTime : null;
@@ -160,7 +160,7 @@ const Dashboard = ({ supervision }) => {
         backgroundColor: 'rgba(153, 102, 255, 0.5)',
       },
       {
-        label: 'BTest Execute Score',
+        label: 'BTest 집행기능 경과 시간',
         data: labels.map(label => {
           const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.btestResult);
           return result ? result.details.executeTime : null;
@@ -168,7 +168,7 @@ const Dashboard = ({ supervision }) => {
         backgroundColor: 'rgba(255, 159, 64, 0.5)',
       },
       {
-        label: 'CTest Execute Score',
+        label: 'CTest 집행기능 점수',
         data: labels.map(label => {
           const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.ctestResult);
           return result ? result.ctestResult.executeScore : null;
@@ -197,12 +197,11 @@ const Dashboard = ({ supervision }) => {
         인지기능 평가
       </Typography>
       <Box sx={{ width: '100%', marginBottom: '20px' }}>
-        <Typography variant="h6">Total Time Spent</Typography>
         {chartData.labels.length > 0 && <Bar data={chartData} />}
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
         <Box sx={{ width: '40%' }}>
-          <Typography variant="h6">Recent Tests</Typography>
+          <Typography variant="h6">최근 테스트</Typography>
           <TableContainer component={Paper}>
             <Table>
               <TableHead>
@@ -225,7 +224,7 @@ const Dashboard = ({ supervision }) => {
           </TableContainer>
         </Box>
         <Box sx={{ width: '50%' }}>
-          <Typography variant="h6">Content Metrics</Typography>
+          <Typography variant="h6">테스트 비율</Typography>
           <Pie data={pieData} />
         </Box>
       </Box>
