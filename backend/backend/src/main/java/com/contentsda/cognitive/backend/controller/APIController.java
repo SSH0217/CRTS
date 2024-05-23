@@ -372,6 +372,7 @@ public class APIController {
     public TestResultData connectCheck(){
         TestResultData testResultData = new TestResultData();
         testResultData.setConnected(true);
+        testResultData.setPatientName("춘자");
         return testResultData;
     }
     /////////////////////////이 밑은 테스트용

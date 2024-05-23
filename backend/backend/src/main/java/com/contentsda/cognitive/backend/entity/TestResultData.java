@@ -7,9 +7,10 @@ import java.util.List;
 @Data
 public class TestResultData {
     private boolean isConnected;
-    private int deviceNum;
+    private int deviceId;
     private String deviceName;
     private int patientID;
+    private String patientName;
     private String testType;
     private String startTime;
     private String endTime;
