@@ -389,6 +389,11 @@ public class APIController {
         return toSendUnity;
     }
 
+    @PostMapping("/reset-connect")
+    public String resetConnect(){
+        toSendUnity = new TestResultData();
+        return "good";
+    }
 
 
 
