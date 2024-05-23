@@ -368,7 +368,12 @@ public class APIController {
         return allTestResultDTOs;
     }
 
-
+    @GetMapping("/connect-check")
+    public TestResultData connectCheck(){
+        TestResultData testResultData = new TestResultData();
+        testResultData.setConnected(true);
+        return testResultData;
+    }
     /////////////////////////이 밑은 테스트용
     @GetMapping("/get-test")
     public TestResultData getTest() {

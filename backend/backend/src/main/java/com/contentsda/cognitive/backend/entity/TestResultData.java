@@ -6,6 +6,7 @@ import java.util.List;
 
 @Data
 public class TestResultData {
+    private boolean isConnected;
     private int deviceNum;
     private String deviceName;
     private int patientID;
