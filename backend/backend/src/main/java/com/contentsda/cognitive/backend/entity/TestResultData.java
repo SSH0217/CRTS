@@ -9,6 +9,7 @@ public class TestResultData {
     private boolean isConnected;
     private int deviceId;
     private String deviceName;
+    private int deviceNum;
     private int patientID;
     private String patientName;
     private String testType;

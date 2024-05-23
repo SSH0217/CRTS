@@ -8,6 +8,7 @@ const ManageUsers = ({ supervision }) => {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [open, setOpen] = useState(false);
   const [device, setDevice] = useState('');
+  const [deviceId, setDeviceId] = useState(''); // deviceId를 추가합니다.
   const [testType, setTestType] = useState('');
 
   const handleOpen = (patient) => {
@@ -21,7 +22,12 @@ const ManageUsers = ({ supervision }) => {
   };
 
   const handleDeviceChange = (event) => {
-    setDevice(event.target.value);
+    const selectedDeviceNum = event.target.value;
+    setDevice(selectedDeviceNum);
+    const selectedDevice = devices.find(d => d.deviceNum === selectedDeviceNum);
+    if (selectedDevice) {
+      setDeviceId(selectedDevice.id); // deviceId를 설정합니다.
+    }
   };
 
   const handleTestTypeChange = (event) => {
@@ -31,9 +37,9 @@ const ManageUsers = ({ supervision }) => {
   const handleConfirm = async () => {
     // 확인 버튼 클릭 시 수행할 작업 추가
     try {
-      const response = await axios.post('/test-setting', {
+      const response = await axios.post('/api/test-setting', {
         patientId: selectedPatient.id,
-        deviceId: device,
+        deviceId: deviceId, // deviceId를 사용합니다.
         testType: testType
       });
       console.log(response.data); // 서버 응답 처리

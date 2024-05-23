@@ -376,6 +376,7 @@ public class APIController {
         TestSubject testSubject = testSubjectRepository.findById(request.getPatientId()).orElse(null);
         Device device = deviceRepository.findById(request.getDeviceId()).orElse(null);
         toSendUnity.setDeviceName(device.getDeviceName());
+        toSendUnity.setDeviceNum(device.getDeviceNum());
         toSendUnity.setDeviceId(device.getId().intValue());
         toSendUnity.setPatientName(testSubject.getName());
         toSendUnity.setPatientID(testSubject.getId().intValue());
