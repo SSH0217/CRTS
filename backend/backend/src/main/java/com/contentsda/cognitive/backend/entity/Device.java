@@ -20,6 +20,9 @@ public class Device {
     @Column(name = "device_num", nullable = false)
     private Integer deviceNum;
 
+    @Column(name = "is_connected", nullable = false)
+    private Boolean isConnected;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "organization_id")
     @JsonBackReference

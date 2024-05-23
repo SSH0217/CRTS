@@ -433,12 +433,14 @@ public class APIController {
         Device device = new Device();
         device.setDeviceNum(1);
         device.setDeviceName("Quest3");
+        device.setIsConnected(false);
         device.setOrganization(organizationRepository.findById(Long.valueOf(2)).get());
         deviceRepository.save(device);
 
         Device device2 = new Device();
         device2.setDeviceNum(2);
         device2.setDeviceName("Quest3");
+        device2.setIsConnected(false);
         device2.setOrganization(organizationRepository.findById(Long.valueOf(2)).get());
         deviceRepository.save(device2);
 
