@@ -9,6 +9,8 @@ const TestResults = ({ supervision }) => {
   const [selectedResult, setSelectedResult] = useState(null);
   const [open, setOpen] = useState(false);
   const [testDetail, setTestDetail] = useState(null);
+  const [logDetails, setLogDetails] = useState(null); // CTest의 logDTOList 저장을 위한 상태
+  const [testType, setTestType] = useState(null); // ATest인지 BTest인지 구분하기 위한 상태 추가
 
   const fieldNames = {
     memoryResult1: "첫 번째 기억입력 결과",
@@ -30,7 +32,11 @@ const TestResults = ({ supervision }) => {
     attentionCount: "주의력 정답 개수",
     executeResult: "집행기능 결과",
     executeTime: "집행기능 경과 시간",
-    logDTOList: "로그"
+    logDTOList: "로그",
+    memoryScore: "기억 점수",
+    visuospatialScore: "시공간 점수",
+    attentionScore: "주의력 점수",
+    executeScore: "집행기능 점수"
   };
 
   const handleOpen = async (result) => {
@@ -43,12 +49,25 @@ const TestResults = ({ supervision }) => {
     if (result.atestResult) {
       apiUrl = '/api/a-test-result-detail';
       params = { id: result.atestResult.id };
+      setTestType('A'); // ATest임을 설정
     } else if (result.btestResult) {
       apiUrl = '/api/b-test-result-detail';
       params = { id: result.btestResult.id };
+      setTestType('B'); // BTest임을 설정
+    } else if (result.ctestResult) {
+      apiUrl = '/api/c-test-result-detail';
+      params = { id: result.ctestResult.id };
+      setTestType('C'); // CTest임을 설정
+
+      try {
+        const response = await axios.get(apiUrl, { params });
+        setLogDetails(response.data); // CTest의 logDTOList 저장
+      } catch (err) {
+        setError('세부 정보를 가져오는 중 오류가 발생했습니다.');
+      }
     }
 
-    if (apiUrl) {
+    if (apiUrl && testType !== 'C') {
       try {
         const response = await axios.get(apiUrl, { params });
         setTestDetail(response.data);
@@ -62,6 +81,8 @@ const TestResults = ({ supervision }) => {
     setOpen(false);
     setSelectedResult(null);
     setTestDetail(null); // 모달을 닫을 때 세부 정보도 초기화
+    setLogDetails(null); // CTest의 logDTOList 초기화
+    setTestType(null); // 테스트 타입 초기화
   };
 
   useEffect(() => {
@@ -170,11 +191,12 @@ const TestResults = ({ supervision }) => {
                       <TableBody>
                         {Object.entries(testDetail)
                           .filter(([key]) => key !== 'logDTOList') // logDTOList 제외
+                          .filter(([key]) => testType === 'B' ? (key !== 'visuospatialOptionCount3' && key !== 'visuospatialOptionCount4') : true) // BTest인 경우 visuospatialOptionCount3 및 visuospatialOptionCount4 제외
                           .map(([key, value]) => (
                             <TableRow key={key}>
                               <TableCell>{fieldNames[key] || key}</TableCell> {/* 필드 이름 매핑 */}
                               <TableCell>
-                              {typeof value === 'boolean' ? (value ? '성공' : '실패') : (Array.isArray(value) ? JSON.stringify(value) : value)}
+                                {typeof value === 'boolean' ? (value ? '성공' : '실패') : (Array.isArray(value) ? JSON.stringify(value) : value)}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -186,7 +208,6 @@ const TestResults = ({ supervision }) => {
 
               {testDetail && testDetail.logDTOList && (
                 <>
-                  <Typography>Log 목록:</Typography>
                   <TableContainer component={Paper}>
                     <Table>
                       <TableHead>
@@ -198,6 +219,32 @@ const TestResults = ({ supervision }) => {
                       </TableHead>
                       <TableBody>
                         {testDetail.logDTOList.map((log, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{log.logNum}</TableCell>
+                            <TableCell>{new Date(log.logTime).toLocaleString()}</TableCell>
+                            <TableCell>{log.log}</TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </>
+              )}
+
+              {testType === 'C' && logDetails && (
+                <>
+                  <Typography>로그 목록:</Typography>
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Log 번호</TableCell>
+                          <TableCell>Log 시간</TableCell>
+                          <TableCell>Log 내용</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {logDetails.map((log, index) => (
                           <TableRow key={index}>
                             <TableCell>{log.logNum}</TableCell>
                             <TableCell>{new Date(log.logTime).toLocaleString()}</TableCell>

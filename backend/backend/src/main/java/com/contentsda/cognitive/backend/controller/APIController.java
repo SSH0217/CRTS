@@ -485,6 +485,20 @@ public class APIController {
         return testResultDetailDTO;
     }
 
+    @GetMapping("/c-test-result-detail")
+    public List<LogDTO> cTestResultDetail(@RequestParam Long id){
+        CTestResult cTestResult = cTestResultRepository.findById(id).orElse(null);
+        List<ExecuteLog> executeLogList = cTestResult.getExecuteLogList();
+        List<LogDTO> logDTOList = new ArrayList<>();
+        for (ExecuteLog executeLog : executeLogList) {
+            LogDTO logDTO = new LogDTO();
+            logDTO.setLogNum(executeLog.getLogNum());
+            logDTO.setLogTime(executeLog.getLogTime());
+            logDTO.setLog(executeLog.getLog());
+            logDTOList.add(logDTO);
+        }
+        return logDTOList;
+    }
 
     /////////////////////////이 밑은 테스트용
     @GetMapping("/get-test")
