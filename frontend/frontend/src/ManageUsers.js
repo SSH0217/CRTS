@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Modal, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Modal, Button, Select, MenuItem, FormControl, InputLabel, TextField } from '@mui/material';
 
 const ManageUsers = ({ supervision }) => {
   const [patients, setPatients] = useState([]);
   const [devices, setDevices] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [open, setOpen] = useState(false);
+  const [addOpen, setAddOpen] = useState(false); // 추가 모달 상태
+  const [newPatientName, setNewPatientName] = useState('');
+  const [newPatientAge, setNewPatientAge] = useState('');
+  const [newPatientGender, setNewPatientGender] = useState('');
+
   const [device, setDevice] = useState('');
-  const [deviceId, setDeviceId] = useState(''); // deviceId를 추가합니다.
+  const [deviceId, setDeviceId] = useState('');
   const [testType, setTestType] = useState('');
 
   const handleOpen = (patient) => {
@@ -21,12 +26,23 @@ const ManageUsers = ({ supervision }) => {
     setSelectedPatient(null);
   };
 
+  const handleAddOpen = () => {
+    setAddOpen(true);
+  };
+
+  const handleAddClose = () => {
+    setAddOpen(false);
+    setNewPatientName('');
+    setNewPatientAge('');
+    setNewPatientGender('');
+  };
+
   const handleDeviceChange = (event) => {
     const selectedDeviceNum = event.target.value;
     setDevice(selectedDeviceNum);
     const selectedDevice = devices.find(d => d.deviceNum === selectedDeviceNum);
     if (selectedDevice) {
-      setDeviceId(selectedDevice.id); // deviceId를 설정합니다.
+      setDeviceId(selectedDevice.id);
     }
   };
 
@@ -35,43 +51,58 @@ const ManageUsers = ({ supervision }) => {
   };
 
   const handleConfirm = async () => {
-    // 확인 버튼 클릭 시 수행할 작업 추가
     try {
       const response = await axios.post('/api/test-setting', {
         patientId: selectedPatient.id,
-        deviceId: deviceId, // deviceId를 사용합니다.
+        deviceId: deviceId,
         testType: testType
       });
-      console.log(response.data); // 서버 응답 처리
+      console.log(response.data);
     } catch (error) {
       console.error('Failed to send test setting', error);
     }
     handleClose();
   };
 
+  const handleAddConfirm = async () => {
+    try {
+      const response = await axios.post('/api/insert-test-subject', {
+        name: newPatientName,
+        age: newPatientAge,
+        gender: newPatientGender,
+        supervisionId: supervision.id // supervisionId 추가
+      });
+      console.log(response.data);
+      fetchPatients(); // 새 환자 목록을 다시 가져옴
+    } catch (error) {
+      console.error('Failed to add new patient', error);
+    }
+    handleAddClose();
+  };
+
+  const fetchPatients = async () => {
+    try {
+      const response = await axios.get('/api/patient-info', {
+        params: { supervisionId: supervision.id }
+      });
+      setPatients(response.data);
+    } catch (error) {
+      console.error('Failed to fetch patients', error);
+    }
+  };
+
+  const fetchDevices = async () => {
+    try {
+      const response = await axios.get('/api/device-list', {
+        params: { supervisionId: supervision.id }
+      });
+      setDevices(response.data);
+    } catch (error) {
+      console.error('Failed to fetch devices', error);
+    }
+  };
+
   useEffect(() => {
-    const fetchPatients = async () => {
-      try {
-        const response = await axios.get('/api/patient-info', {
-          params: { supervisionId: supervision.id }
-        });
-        setPatients(response.data);
-      } catch (error) {
-        console.error('Failed to fetch patients', error);
-      }
-    };
-
-    const fetchDevices = async () => {
-      try {
-        const response = await axios.get('/api/device-list', {
-          params: { supervisionId: supervision.id }
-        });
-        setDevices(response.data);
-      } catch (error) {
-        console.error('Failed to fetch devices', error);
-      }
-    };
-
     if (supervision) {
       fetchPatients();
       fetchDevices();
@@ -83,6 +114,9 @@ const ManageUsers = ({ supervision }) => {
       <Typography variant="h4" gutterBottom>
         피검사자 관리
       </Typography>
+      <Button variant="contained" color="primary" onClick={handleAddOpen} sx={{ mb: 2 }}>
+        피검사자 추가
+      </Button>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -161,6 +195,51 @@ const ManageUsers = ({ supervision }) => {
               </Box>
             </>
           )}
+        </Box>
+      </Modal>
+
+      <Modal
+        open={addOpen}
+        onClose={handleAddClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            피검사자 추가
+          </Typography>
+          <TextField
+            fullWidth
+            label="이름"
+            value={newPatientName}
+            onChange={(e) => setNewPatientName(e.target.value)}
+            sx={{ mt: 2 }}
+          />
+          <TextField
+            fullWidth
+            label="나이"
+            type="number"
+            value={newPatientAge}
+            onChange={(e) => setNewPatientAge(e.target.value)}
+            sx={{ mt: 2 }}
+          />
+          <FormControl fullWidth sx={{ mt: 2 }}>
+            <InputLabel id="gender-label">성별</InputLabel>
+            <Select
+              labelId="gender-label"
+              value={newPatientGender}
+              onChange={(e) => setNewPatientGender(e.target.value)}
+              label="성별"
+            >
+              <MenuItem value="male">남자</MenuItem>
+              <MenuItem value="female">여자</MenuItem>
+            </Select>
+          </FormControl>
+
+          <Box display="flex" justifyContent="flex-end" sx={{ mt: 2 }}>
+            <Button onClick={handleAddConfirm} variant="contained" color="primary" sx={{ mr: 2 }}>확인</Button>
+            <Button onClick={handleAddClose}>닫기</Button>
+          </Box>
         </Box>
       </Modal>
     </Box>

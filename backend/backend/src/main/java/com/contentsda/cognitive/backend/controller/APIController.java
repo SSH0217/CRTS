@@ -507,6 +507,20 @@ public class APIController {
         return cTestResultDetail;
     }
 
+
+    @PostMapping("/insert-test-subject")
+    public String insertTestSubject(@RequestBody TestSubjectDTO testSubjectDTO){
+        Supervision supervision = supervisionRepository.findById(testSubjectDTO.getSupervisionId()).orElse(null);
+        TestSubject testSubject = new TestSubject();
+        testSubject.setName(testSubjectDTO.getName());
+        testSubject.setAge(testSubjectDTO.getAge());
+        testSubject.setGender(testSubjectDTO.getGender());
+        testSubject.setCreatedDate(LocalDateTime.now());
+
+        return "good";
+    }
+
+
     /////////////////////////이 밑은 테스트용
     @GetMapping("/get-test")
     public TestResultData getTest() {

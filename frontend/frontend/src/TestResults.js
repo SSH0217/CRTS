@@ -9,7 +9,7 @@ const TestResults = ({ supervision }) => {
   const [selectedResult, setSelectedResult] = useState(null);
   const [open, setOpen] = useState(false);
   const [testDetail, setTestDetail] = useState(null);
-  const [logDetails, setLogDetails] = useState(null); // CTest의 logDTOList 저장을 위한 상태
+  const [logDetails, setLogDetails] = useState(null); // logDTOList 저장을 위한 상태
   const [testType, setTestType] = useState(null); // ATest인지 BTest인지 구분하기 위한 상태 추가
 
   const fieldNames = {
@@ -58,19 +58,17 @@ const TestResults = ({ supervision }) => {
       apiUrl = '/api/c-test-result-detail';
       params = { id: result.ctestResult.id };
       setTestType('C'); // CTest임을 설정
-
-      try {
-        const response = await axios.get(apiUrl, { params });
-        setLogDetails(response.data); // CTest의 logDTOList 저장
-      } catch (err) {
-        setError('세부 정보를 가져오는 중 오류가 발생했습니다.');
-      }
     }
 
-    if (apiUrl && testType !== 'C') {
+    if (apiUrl) {
       try {
         const response = await axios.get(apiUrl, { params });
         setTestDetail(response.data);
+        if (response.data.logDTOList) {
+          setLogDetails(response.data.logDTOList); // 로그 정보 저장
+        } else {
+          setLogDetails(null); // 로그 정보가 없으면 초기화
+        }
       } catch (err) {
         setError('세부 정보를 가져오는 중 오류가 발생했습니다.');
       }
@@ -81,7 +79,7 @@ const TestResults = ({ supervision }) => {
     setOpen(false);
     setSelectedResult(null);
     setTestDetail(null); // 모달을 닫을 때 세부 정보도 초기화
-    setLogDetails(null); // CTest의 logDTOList 초기화
+    setLogDetails(null); // logDTOList 초기화
     setTestType(null); // 테스트 타입 초기화
   };
 
@@ -196,7 +194,7 @@ const TestResults = ({ supervision }) => {
                             <TableRow key={key}>
                               <TableCell>{fieldNames[key] || key}</TableCell> {/* 필드 이름 매핑 */}
                               <TableCell>
-                                {typeof value === 'boolean' ? (value ? '성공' : '실패') : (typeof value === 'object' ? JSON.stringify(value) : value)}
+                                {typeof value === 'boolean' ? (value ? '성공' : '실패') : (typeof value === 'object' && !Array.isArray(value) ? JSON.stringify(value) : value)}
                               </TableCell>
                             </TableRow>
                           ))}
@@ -206,34 +204,8 @@ const TestResults = ({ supervision }) => {
                 </>
               )}
 
-              {testDetail && testDetail.logDTOList && (
+              {logDetails && (
                 <>
-                  <TableContainer component={Paper}>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Log 번호</TableCell>
-                          <TableCell>Log 시간</TableCell>
-                          <TableCell>Log 내용</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {testDetail.logDTOList.map((log, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{log.logNum}</TableCell>
-                            <TableCell>{new Date(log.logTime).toLocaleString()}</TableCell>
-                            <TableCell>{log.log}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </>
-              )}
-
-              {testType === 'C' && logDetails && (
-                <>
-                  <Typography>로그 목록:</Typography>
                   <TableContainer component={Paper}>
                     <Table>
                       <TableHead>

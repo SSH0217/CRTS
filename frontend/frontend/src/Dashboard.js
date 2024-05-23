@@ -1,5 +1,6 @@
-import React from 'react';
-import { Box, Typography } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 import { Bar, Pie } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -20,30 +21,172 @@ ChartJS.register(
   Legend
 );
 
-const Dashboard = () => {
-  const barData = {
-    labels: ['2024-02-21', '2024-02-22', '2024-03-20', '2024-05-10'],
-    datasets: [
+const Dashboard = ({ supervision }) => {
+  const [testResults, setTestResults] = useState([]);
+  const [atestCount, setAtestCount] = useState(0);
+  const [btestCount, setBtestCount] = useState(0);
+  const [ctestCount, setCtestCount] = useState(0);
+  const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+  const [recentTests, setRecentTests] = useState([]);
+
+  useEffect(() => {
+    const fetchTestResults = async () => {
+      try {
+        const response = await axios.get('/api/all-test-result', {
+          params: { supervisionId: supervision.id },
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+
+        const data = response.data;
+        setTestResults(data);
+
+        const atestCount = data.filter(result => result.atestResult).length;
+        const btestCount = data.filter(result => result.btestResult).length;
+        const ctestCount = data.filter(result => result.ctestResult).length;
+
+        setAtestCount(atestCount);
+        setBtestCount(btestCount);
+        setCtestCount(ctestCount);
+
+        const chartData = await Promise.all(data.map(async (result) => {
+          let details;
+          if (result.atestResult) {
+            details = await axios.get('/api/a-test-result-detail', { params: { id: result.atestResult.id } });
+          } else if (result.btestResult) {
+            details = await axios.get('/api/b-test-result-detail', { params: { id: result.btestResult.id } });
+          }
+
+          return {
+            ...result,
+            details: details ? details.data : null,
+          };
+        }));
+
+        setChartData(processChartData(chartData));
+
+        setRecentTests(data.slice(-10).reverse()); // 최근 테스트 10개를 역순으로 저장
+      } catch (err) {
+        console.error('Failed to fetch test results', err);
+      }
+    };
+
+    fetchTestResults();
+  }, [supervision]);
+
+  const processChartData = (data) => {
+    const labels = [...new Set(data.map(result => new Date(result.testStartTime).toLocaleDateString()))];
+
+    const datasets = [
       {
-        label: 'Time Spent (Seconds)',
-        data: [0, 20, 10, 90],
-        backgroundColor: 'rgba(0, 0, 255, 0.5)',
+        label: 'ATest Memory Score',
+        data: labels.map(label => {
+          const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.atestResult);
+          return result ? result.details.memoryResult1 : null;
+        }),
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
       },
       {
-        label: 'Performance Score (%)',
-        data: [0, 30, 20, 120],
-        backgroundColor: 'rgba(255, 165, 0, 0.5)',
+        label: 'BTest Memory Score',
+        data: labels.map(label => {
+          const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.btestResult);
+          return result ? result.details.memoryResult1 : null;
+        }),
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
       },
-    ],
+      {
+        label: 'CTest Memory Score',
+        data: labels.map(label => {
+          const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.ctestResult);
+          return result ? result.ctestResult.memoryScore : null;
+        }),
+        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+      },
+      {
+        label: 'ATest Visuospatial Score',
+        data: labels.map(label => {
+          const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.atestResult);
+          return result ? result.details.visuospatialCount : null;
+        }),
+        backgroundColor: 'rgba(255, 206, 86, 0.5)',
+      },
+      {
+        label: 'BTest Visuospatial Score',
+        data: labels.map(label => {
+          const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.btestResult);
+          return result ? result.details.visuospatialCount : null;
+        }),
+        backgroundColor: 'rgba(153, 102, 255, 0.5)',
+      },
+      {
+        label: 'CTest Visuospatial Score',
+        data: labels.map(label => {
+          const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.ctestResult);
+          return result ? result.ctestResult.visuospatialScore : null;
+        }),
+        backgroundColor: 'rgba(255, 159, 64, 0.5)',
+      },
+      {
+        label: 'ATest Attention Score',
+        data: labels.map(label => {
+          const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.atestResult);
+          return result ? result.details.attentionCount : null;
+        }),
+        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+      },
+      {
+        label: 'BTest Attention Score',
+        data: labels.map(label => {
+          const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.btestResult);
+          return result ? result.details.attentionCount : null;
+        }),
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+      {
+        label: 'CTest Attention Score',
+        data: labels.map(label => {
+          const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.ctestResult);
+          return result ? result.ctestResult.attentionScore : null;
+        }),
+        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+      },
+      {
+        label: 'ATest Execute Score',
+        data: labels.map(label => {
+          const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.atestResult);
+          return result ? result.details.executeTime : null;
+        }),
+        backgroundColor: 'rgba(153, 102, 255, 0.5)',
+      },
+      {
+        label: 'BTest Execute Score',
+        data: labels.map(label => {
+          const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.btestResult);
+          return result ? result.details.executeTime : null;
+        }),
+        backgroundColor: 'rgba(255, 159, 64, 0.5)',
+      },
+      {
+        label: 'CTest Execute Score',
+        data: labels.map(label => {
+          const result = data.find(result => new Date(result.testStartTime).toLocaleDateString() === label && result.ctestResult);
+          return result ? result.ctestResult.executeScore : null;
+        }),
+        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+      },
+    ];
+
+    return { labels, datasets };
   };
 
   const pieData = {
-    labels: ['온도에 따른 반응속도', '아이오딘 폭탄', '로켓 캔디', '지층이 만들어지는 원리', '아이오딘 물질의 상태(브라운)', 'Deleted'],
+    labels: ['ATest', 'BTest', 'CTest'],
     datasets: [
       {
-        data: [15, 5, 10, 25, 10, 35],
-        backgroundColor: ['#42A5F5', '#66BB6A', '#FFA726', '#EF5350', '#AB47BC', '#BDBDBD'],
-        hoverBackgroundColor: ['#64B5F6', '#81C784', '#FFB74D', '#E57373', '#CE93D8', '#E0E0E0'],
+        data: [atestCount, btestCount, ctestCount],
+        backgroundColor: ['#42A5F5', '#66BB6A', '#FFA726'],
+        hoverBackgroundColor: ['#64B5F6', '#81C784', '#FFB74D'],
       },
     ],
   };
@@ -53,13 +196,38 @@ const Dashboard = () => {
       <Typography variant="h4" gutterBottom>
         인지기능 평가
       </Typography>
-      <Box sx={{ width: '80%', margin: '0 auto' }}>
+      <Box sx={{ width: '100%', marginBottom: '20px' }}>
         <Typography variant="h6">Total Time Spent</Typography>
-        <Bar data={barData} />
+        {chartData.labels.length > 0 && <Bar data={chartData} />}
       </Box>
-      <Box sx={{ width: '60%', margin: '20px auto' }}>
-        <Typography variant="h6">Content Metrics</Typography>
-        <Pie data={pieData} />
+      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <Box sx={{ width: '40%' }}>
+          <Typography variant="h6">Recent Tests</Typography>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Test Type</TableCell>
+                  <TableCell>Start Time</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {recentTests.map((record, index) => (
+                  <TableRow key={index}>
+                    <TableCell>
+                      {record.atestResult ? 'ATest' : record.btestResult ? 'BTest' : 'CTest'}
+                    </TableCell>
+                    <TableCell>{new Date(record.testStartTime).toLocaleString()}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+        <Box sx={{ width: '50%' }}>
+          <Typography variant="h6">Content Metrics</Typography>
+          <Pie data={pieData} />
+        </Box>
       </Box>
     </Box>
   );
