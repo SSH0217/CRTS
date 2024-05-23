@@ -1,6 +1,7 @@
 package com.contentsda.cognitive.backend.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -29,14 +30,14 @@ public class TestResult {
     private TestSubject testSubject;
 
     @OneToOne(mappedBy = "testResult", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private ATestResult aTestResult;
 
     @OneToOne(mappedBy = "testResult", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private BTestResult bTestResult;
 
     @OneToOne(mappedBy = "testResult", cascade = CascadeType.ALL)
-    @JsonManagedReference
+    @JsonIgnore
     private CTestResult cTestResult;
 }
