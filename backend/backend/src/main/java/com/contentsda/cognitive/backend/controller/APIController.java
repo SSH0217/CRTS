@@ -395,7 +395,58 @@ public class APIController {
         return "good";
     }
 
-    
+    @GetMapping("/a-test-result-detail")
+    public TestResultDetailDTO aTestResultDetail(@RequestParam Long id){
+        ATestResult aTestResult = aTestResultRepository.findById(id).orElse(null);
+        MartMemoryTestResult martMemoryTestResult = martMemoryTestResultRepository.findById(aTestResult.getMartMemoryTestResult().getId()).orElse(null);
+        SeparateVisuospatialTestResult separateVisuospatialTestResult = separateVisuospatialTestResultRepository.findById(aTestResult.getSeparateVisuospatialTestResult().getId()).orElse(null);
+        MealAttentionTestResult mealAttentionTestResult = mealAttentionTestResultRepository.findById(aTestResult.getMealAttentionTestResult().getId()).orElse(null);
+        MicrowaveExecuteTestResult microwaveExecuteTestResult = microwaveExecuteTestResultRepository.findById(aTestResult.getMicrowaveExecuteTestResult().getId()).orElse(null);
+        List<ExecuteLog> executeLogList = microwaveExecuteTestResult.getExecuteLogList();
+
+        TestResultDetailDTO testResultDetailDTO = new TestResultDetailDTO();
+        testResultDetailDTO.setMemoryResult1(martMemoryTestResult.getMartMemoryResult1());
+        testResultDetailDTO.setMemoryResult2(martMemoryTestResult.getMartMemoryResult2());
+        testResultDetailDTO.setMemoryResult3(martMemoryTestResult.getMartMemoryResult3());
+        testResultDetailDTO.setCorrectItem1(martMemoryTestResult.getCorrectItem1());
+        testResultDetailDTO.setCorrectItem2(martMemoryTestResult.getCorrectItem2());
+        testResultDetailDTO.setCorrectItem3(martMemoryTestResult.getCorrectItem3());
+        testResultDetailDTO.setRememberResult(martMemoryTestResult.getMartRememberResult());
+        testResultDetailDTO.setRememberCorrectItem(martMemoryTestResult.getRememberCorrectItem());
+
+        testResultDetailDTO.setVisuospatialResult(separateVisuospatialTestResult.getSeparateResult());
+        testResultDetailDTO.setVisuospatialCount(separateVisuospatialTestResult.getSeparateCount());
+        testResultDetailDTO.setVisuospatialOptionCount1(separateVisuospatialTestResult.getSeparatePlasticCount());
+        testResultDetailDTO.setVisuospatialOptionCount2(separateVisuospatialTestResult.getSeparateCanCount());
+        testResultDetailDTO.setVisuospatialOptionCount3(separateVisuospatialTestResult.getSeparateGlassCount());
+        testResultDetailDTO.setVisuospatialOptionCount4(separateVisuospatialTestResult.getSeparateVinylCount());
+        testResultDetailDTO.setVisuospatialTime(separateVisuospatialTestResult.getSeparateTime());
+
+        testResultDetailDTO.setAttentionResult(mealAttentionTestResult.getMealResult());
+        testResultDetailDTO.setAttentionCount(mealAttentionTestResult.getMealCount());
+
+        testResultDetailDTO.setExecuteResult(microwaveExecuteTestResult.getMicrowaveResult());
+        testResultDetailDTO.setExecuteTime(microwaveExecuteTestResult.getMicrowaveTime());
+
+        List<LogDTO> logDTOList = new ArrayList<>();
+        for (ExecuteLog executeLog : executeLogList) {
+            LogDTO logDTO = new LogDTO();
+            logDTO.setLogNum(executeLog.getLogNum());
+            logDTO.setLogTime(executeLog.getLogTime());
+            logDTO.setLog(executeLog.getLog());
+            logDTOList.add(logDTO);
+        }
+        testResultDetailDTO.setLogDTOList(logDTOList);
+
+        return testResultDetailDTO;
+    }
+
+    @GetMapping("/b-test-result-detail")
+    public TestResultDetailDTO bTestResultDetail(@RequestParam Long id){
+        TestResultDetailDTO testResultDetailDTO = new TestResultDetailDTO();
+
+        return testResultDetailDTO;
+    }
 
 
     /////////////////////////이 밑은 테스트용

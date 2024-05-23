@@ -8,15 +8,37 @@ const TestResults = ({ supervision }) => {
   const [error, setError] = useState(null);
   const [selectedResult, setSelectedResult] = useState(null);
   const [open, setOpen] = useState(false);
+  const [testDetail, setTestDetail] = useState(null);
 
-  const handleOpen = (result) => {
+  const handleOpen = async (result) => {
     setSelectedResult(result);
     setOpen(true);
+
+    let apiUrl = '';
+    let params = {};
+
+    if (result.atestResult) {
+      apiUrl = '/api/a-test-result-detail';
+      params = { id: result.atestResult.id };
+    } else if (result.btestResult) {
+      apiUrl = '/api/b-test-result-detail';
+      params = { id: result.btestResult.id };
+    }
+
+    if (apiUrl) {
+      try {
+        const response = await axios.get(apiUrl, { params });
+        setTestDetail(response.data);
+      } catch (err) {
+        setError('세부 정보를 가져오는 중 오류가 발생했습니다.');
+      }
+    }
   };
 
   const handleClose = () => {
     setOpen(false);
     setSelectedResult(null);
+    setTestDetail(null); // 모달을 닫을 때 세부 정보도 초기화
   };
 
   useEffect(() => {
@@ -97,10 +119,10 @@ const TestResults = ({ supervision }) => {
               </Typography>
               <Typography>테스트 시작 시각: {new Date(selectedResult.testStartTime).toLocaleString()}</Typography>
               <Typography>테스트 종료 시각: {new Date(selectedResult.testEndTime).toLocaleString()}</Typography>
-              
-              {selectedResult.atestResult && (
+
+              {testDetail && (
                 <>
-                  <Typography>A Test 결과:</Typography>
+                  <Typography>테스트 세부 정보:</Typography>
                   <TableContainer component={Paper}>
                     <Table>
                       <TableHead>
@@ -110,64 +132,11 @@ const TestResults = ({ supervision }) => {
                         </TableRow>
                       </TableHead>
                       <TableBody>
-                        {Object.entries(selectedResult.atestResult)
-                          .filter(([key]) => key !== 'id')
+                        {Object.entries(testDetail)
                           .map(([key, value]) => (
                             <TableRow key={key}>
                               <TableCell>{key}</TableCell>
-                              <TableCell>{value}</TableCell>
-                            </TableRow>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </>
-              )}
-
-              {selectedResult.btestResult && (
-                <>
-                  <Typography>B Test 결과:</Typography>
-                  <TableContainer component={Paper}>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>항목</TableCell>
-                          <TableCell>결과</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {Object.entries(selectedResult.btestResult)
-                          .filter(([key]) => key !== 'id')
-                          .map(([key, value]) => (
-                            <TableRow key={key}>
-                              <TableCell>{key}</TableCell>
-                              <TableCell>{value}</TableCell>
-                            </TableRow>
-                          ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </>
-              )}
-
-              {selectedResult.ctestResult && (
-                <>
-                  <Typography>C Test 결과:</Typography>
-                  <TableContainer component={Paper}>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>필드</TableCell>
-                          <TableCell>값</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {Object.entries(selectedResult.ctestResult)
-                          .filter(([key]) => key !== 'id')
-                          .map(([key, value]) => (
-                            <TableRow key={key}>
-                              <TableCell>{key}</TableCell>
-                              <TableCell>{value}</TableCell>
+                              <TableCell>{Array.isArray(value) ? JSON.stringify(value) : value}</TableCell>
                             </TableRow>
                           ))}
                       </TableBody>
