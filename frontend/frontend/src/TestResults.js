@@ -10,6 +10,29 @@ const TestResults = ({ supervision }) => {
   const [open, setOpen] = useState(false);
   const [testDetail, setTestDetail] = useState(null);
 
+  const fieldNames = {
+    memoryResult1: "첫 번째 기억입력 결과",
+    memoryResult2: "두 번째 기억입력 결과",
+    memoryResult3: "세 번째 기억입력 결과",
+    correctItem1: "첫 번째 기억입력 정답 개수",
+    correctItem2: "두 번째 기억입력 정답 개수",
+    correctItem3: "세 번째 기억입력 정답 개수",
+    rememberResult: "기억 회상 결과",
+    rememberCorrectItem: "기억 회상 정답 개수",
+    visuospatialResult: "시공간 능력 결과",
+    visuospatialCount: "시공간 능력 정답 개수",
+    visuospatialOptionCount1: "시공간 능력 옵션 1 정답 개수",
+    visuospatialOptionCount2: "시공간 능력 옵션 2 정답 개수",
+    visuospatialOptionCount3: "시공간 능력 옵션 3 정답 개수",
+    visuospatialOptionCount4: "시공간 능력 옵션 4 정답 개수",
+    visuospatialTime: "시공간 능력 경과 시간",
+    attentionResult: "주의력 결과",
+    attentionCount: "주의력 정답 개수",
+    executeResult: "집행기능 결과",
+    executeTime: "집행기능 경과 시간",
+    logDTOList: "로그"
+  };
+
   const handleOpen = async (result) => {
     setSelectedResult(result);
     setOpen(true);
@@ -108,7 +131,20 @@ const TestResults = ({ supervision }) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 400, bgcolor: 'background.paper', border: '2px solid #000', boxShadow: 24, p: 4 }}>
+        <Box sx={{ 
+          position: 'absolute', 
+          top: '50%', 
+          left: '50%', 
+          transform: 'translate(-50%, -50%)', 
+          width: '80vw', // 모달 너비를 80%로 설정
+          maxWidth: 800, // 최대 너비 설정
+          bgcolor: 'background.paper', 
+          border: '2px solid #000', 
+          boxShadow: 24, 
+          p: 4,
+          maxHeight: '80vh', // 최대 높이 설정
+          overflowY: 'auto' // 스크롤 추가
+        }}>
           {selectedResult && (
             <>
               <Typography id="modal-modal-title" variant="h6" component="h2">
@@ -133,12 +169,41 @@ const TestResults = ({ supervision }) => {
                       </TableHead>
                       <TableBody>
                         {Object.entries(testDetail)
+                          .filter(([key]) => key !== 'logDTOList') // logDTOList 제외
                           .map(([key, value]) => (
                             <TableRow key={key}>
-                              <TableCell>{key}</TableCell>
-                              <TableCell>{Array.isArray(value) ? JSON.stringify(value) : value}</TableCell>
+                              <TableCell>{fieldNames[key] || key}</TableCell> {/* 필드 이름 매핑 */}
+                              <TableCell>
+                              {typeof value === 'boolean' ? (value ? '성공' : '실패') : (Array.isArray(value) ? JSON.stringify(value) : value)}
+                              </TableCell>
                             </TableRow>
                           ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </>
+              )}
+
+              {testDetail && testDetail.logDTOList && (
+                <>
+                  <Typography>Log 목록:</Typography>
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Log 번호</TableCell>
+                          <TableCell>Log 시간</TableCell>
+                          <TableCell>Log 내용</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {testDetail.logDTOList.map((log, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{log.logNum}</TableCell>
+                            <TableCell>{new Date(log.logTime).toLocaleString()}</TableCell>
+                            <TableCell>{log.log}</TableCell>
+                          </TableRow>
+                        ))}
                       </TableBody>
                     </Table>
                   </TableContainer>

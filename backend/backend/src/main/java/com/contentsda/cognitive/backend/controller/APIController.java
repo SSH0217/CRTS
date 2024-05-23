@@ -443,7 +443,44 @@ public class APIController {
 
     @GetMapping("/b-test-result-detail")
     public TestResultDetailDTO bTestResultDetail(@RequestParam Long id){
+        BTestResult bTestResult = bTestResultRepository.findById(id).orElse(null);
+        PaintMemoryTestResult paintMemoryTestResult = paintMemoryTestResultRepository.findById(bTestResult.getPaintMemoryTestResult().getId()).orElse(null);
+        DeskVisuospatialTestResult deskVisuospatialTestResult = deskVisuospatialTestResultRepository.findById(bTestResult.getDeskVisuospatialTestResult().getId()).orElse(null);
+        CallAttentionTestResult callAttentionTestResult = callAttentionTestResultRepository.findById(bTestResult.getCallAttentionTestResult().getId()).orElse(null);
+        WashingMachineExecuteTestResult washingMachineExecuteTestResult = washingMachineExecuteTestResultRepository.findById(bTestResult.getWashingMachineExecuteTestResult().getId()).orElse(null);
+        List<ExecuteLog> executeLogList = washingMachineExecuteTestResult.getExecuteLogList();
+
         TestResultDetailDTO testResultDetailDTO = new TestResultDetailDTO();
+        testResultDetailDTO.setMemoryResult1(paintMemoryTestResult.getPaintMemoryResult1());
+        testResultDetailDTO.setMemoryResult2(paintMemoryTestResult.getPaintMemoryResult2());
+        testResultDetailDTO.setMemoryResult3(paintMemoryTestResult.getPaintMemoryResult3());
+        testResultDetailDTO.setCorrectItem1(paintMemoryTestResult.getCorrectPaint1());
+        testResultDetailDTO.setCorrectItem2(paintMemoryTestResult.getCorrectPaint2());
+        testResultDetailDTO.setCorrectItem3(paintMemoryTestResult.getCorrectPaint3());
+        testResultDetailDTO.setRememberResult(paintMemoryTestResult.getPaintRememberResult());
+        testResultDetailDTO.setRememberCorrectItem(paintMemoryTestResult.getRememberCorrectPaint());
+
+        testResultDetailDTO.setVisuospatialResult(deskVisuospatialTestResult.getDeskResult());
+        testResultDetailDTO.setVisuospatialCount(deskVisuospatialTestResult.getDeskCount());
+        testResultDetailDTO.setVisuospatialOptionCount1(deskVisuospatialTestResult.getDeskBookCount());
+        testResultDetailDTO.setVisuospatialOptionCount2(deskVisuospatialTestResult.getDeskWritingCount());
+        testResultDetailDTO.setVisuospatialTime(deskVisuospatialTestResult.getDeskTime());
+
+        testResultDetailDTO.setAttentionResult(callAttentionTestResult.getCallResult());
+        testResultDetailDTO.setAttentionCount(callAttentionTestResult.getCallCount());
+
+        testResultDetailDTO.setExecuteResult(washingMachineExecuteTestResult.getWashingMachineResult());
+        testResultDetailDTO.setExecuteTime(washingMachineExecuteTestResult.getWashingMachineTime());
+
+        List<LogDTO> logDTOList = new ArrayList<>();
+        for (ExecuteLog executeLog : executeLogList) {
+            LogDTO logDTO = new LogDTO();
+            logDTO.setLogNum(executeLog.getLogNum());
+            logDTO.setLogTime(executeLog.getLogTime());
+            logDTO.setLog(executeLog.getLog());
+            logDTOList.add(logDTO);
+        }
+        testResultDetailDTO.setLogDTOList(logDTOList);
 
         return testResultDetailDTO;
     }
