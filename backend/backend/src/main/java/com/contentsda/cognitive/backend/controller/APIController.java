@@ -516,7 +516,9 @@ public class APIController {
         testSubject.setAge(testSubjectDTO.getAge());
         testSubject.setGender(testSubjectDTO.getGender());
         testSubject.setCreatedDate(LocalDateTime.now());
+        testSubject.setSupervision(supervision);
 
+        testSubjectRepository.save(testSubject);
         return "good";
     }
 
