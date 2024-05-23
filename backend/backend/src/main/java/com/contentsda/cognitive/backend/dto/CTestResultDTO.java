@@ -1,5 +1,7 @@
-package com.contentsda.cognitive.backend.entity;
+package com.contentsda.cognitive.backend.dto;
 
+import com.contentsda.cognitive.backend.entity.CTestResult;
+import com.contentsda.cognitive.backend.entity.ExecuteLog;
 import lombok.Data;
 import java.util.List;
 import java.util.stream.Collectors;

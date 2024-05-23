@@ -1,4 +1,4 @@
-package com.contentsda.cognitive.backend.entity;
+package com.contentsda.cognitive.backend.dto;
 
 import lombok.Data;
 

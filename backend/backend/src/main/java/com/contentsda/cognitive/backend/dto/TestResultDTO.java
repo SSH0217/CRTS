@@ -1,6 +1,8 @@
-package com.contentsda.cognitive.backend.entity;
+package com.contentsda.cognitive.backend.dto;
 
-import com.contentsda.cognitive.backend.entity.*;
+import com.contentsda.cognitive.backend.dto.ATestResultDTO;
+import com.contentsda.cognitive.backend.dto.BTestResultDTO;
+import com.contentsda.cognitive.backend.dto.CTestResultDTO;
 import lombok.Data;
 
 import java.time.LocalDateTime;

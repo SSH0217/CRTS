@@ -1,5 +1,6 @@
 package com.contentsda.cognitive.backend.controller;
 
+import com.contentsda.cognitive.backend.dto.*;
 import com.contentsda.cognitive.backend.entity.*;
 import com.contentsda.cognitive.backend.repository.*;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,7 +21,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
@@ -395,7 +395,7 @@ public class APIController {
         return "good";
     }
 
-
+    
 
 
     /////////////////////////이 밑은 테스트용

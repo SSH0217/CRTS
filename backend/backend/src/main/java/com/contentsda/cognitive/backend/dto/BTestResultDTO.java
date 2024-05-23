@@ -1,5 +1,6 @@
-package com.contentsda.cognitive.backend.entity;
+package com.contentsda.cognitive.backend.dto;
 
+import com.contentsda.cognitive.backend.entity.BTestResult;
 import lombok.Data;
 
 @Data
