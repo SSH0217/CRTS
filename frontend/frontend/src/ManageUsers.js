@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Modal, Button } from '@mui/material';
+import { Box, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Modal, Button, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 
 const ManageUsers = ({ supervision }) => {
   const [patients, setPatients] = useState([]);
+  const [devices, setDevices] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [open, setOpen] = useState(false);
+  const [device, setDevice] = useState('');
+  const [testType, setTestType] = useState('');
 
   const handleOpen = (patient) => {
     setSelectedPatient(patient);
@@ -15,6 +18,29 @@ const ManageUsers = ({ supervision }) => {
   const handleClose = () => {
     setOpen(false);
     setSelectedPatient(null);
+  };
+
+  const handleDeviceChange = (event) => {
+    setDevice(event.target.value);
+  };
+
+  const handleTestTypeChange = (event) => {
+    setTestType(event.target.value);
+  };
+
+  const handleConfirm = async () => {
+    // 확인 버튼 클릭 시 수행할 작업 추가
+    try {
+      const response = await axios.post('/test-setting', {
+        patientId: selectedPatient.id,
+        deviceId: device,
+        testType: testType
+      });
+      console.log(response.data); // 서버 응답 처리
+    } catch (error) {
+      console.error('Failed to send test setting', error);
+    }
+    handleClose();
   };
 
   useEffect(() => {
@@ -29,8 +55,20 @@ const ManageUsers = ({ supervision }) => {
       }
     };
 
+    const fetchDevices = async () => {
+      try {
+        const response = await axios.get('/api/device-list', {
+          params: { supervisionId: supervision.id }
+        });
+        setDevices(response.data);
+      } catch (error) {
+        console.error('Failed to fetch devices', error);
+      }
+    };
+
     if (supervision) {
       fetchPatients();
+      fetchDevices();
     }
   }, [supervision]);
 
@@ -72,7 +110,7 @@ const ManageUsers = ({ supervision }) => {
           {selectedPatient && (
             <>
               <Typography id="modal-modal-title" variant="h6" component="h2">
-                피검사자 상세 정보
+                피검사자 테스트 설정
               </Typography>
               <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                 이름: {selectedPatient.name}
@@ -80,7 +118,39 @@ const ManageUsers = ({ supervision }) => {
               <Typography>나이: {selectedPatient.age}</Typography>
               <Typography>성별: {selectedPatient.gender}</Typography>
               <Typography>생성일: {new Date(selectedPatient.createdDate).toLocaleString()}</Typography>
+
+              <FormControl fullWidth sx={{ mt: 2 }}>
+                <InputLabel id="device-label">디바이스</InputLabel>
+                <Select
+                  labelId="device-label"
+                  value={device}
+                  onChange={handleDeviceChange}
+                  label="디바이스"
+                >
+                  {devices.map((device) => (
+                    <MenuItem key={device.deviceNum} value={device.deviceNum}>
+                      {device.deviceNum} 번 {device.deviceName}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+
+              <FormControl fullWidth sx={{ mt: 2 }}>
+                <InputLabel id="test-type-label">테스트 타입</InputLabel>
+                <Select
+                  labelId="test-type-label"
+                  value={testType}
+                  onChange={handleTestTypeChange}
+                  label="테스트 타입"
+                >
+                  <MenuItem value="TypeA">TypeA</MenuItem>
+                  <MenuItem value="TypeB">TypeB</MenuItem>
+                  <MenuItem value="TypeC">TypeC</MenuItem>
+                </Select>
+              </FormControl>
+
               <Box display="flex" justifyContent="flex-end" sx={{ mt: 2 }}>
+                <Button onClick={handleConfirm} variant="contained" color="primary" sx={{ mr: 2 }}>확인</Button>
                 <Button onClick={handleClose}>닫기</Button>
               </Box>
             </>

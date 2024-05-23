@@ -56,4 +56,8 @@ public class TestResultData {
     private int washingMachineTime;
     private List<String> washingMachineLog;
     private List<String> washingMachineLogTime;
+
+    public TestResultData() {
+        this.isConnected = false; // connected 값을 false로 초기화
+    }
 }

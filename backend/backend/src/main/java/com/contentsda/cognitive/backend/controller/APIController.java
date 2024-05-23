@@ -368,13 +368,30 @@ public class APIController {
         return allTestResultDTOs;
     }
 
+    TestResultData toSendUnity = new TestResultData();
+
+    @PostMapping("/test-setting")
+    public String testSetting(@RequestBody TestSettingRequest request) {
+        toSendUnity.setConnected(true);
+        TestSubject testSubject = testSubjectRepository.findById(request.getPatientId()).orElse(null);
+        Device device = deviceRepository.findById(request.getDeviceId()).orElse(null);
+        toSendUnity.setDeviceName(device.getDeviceName());
+        toSendUnity.setDeviceId(device.getId().intValue());
+        toSendUnity.setPatientName(testSubject.getName());
+        toSendUnity.setPatientID(testSubject.getId().intValue());
+        toSendUnity.setTestType(request.getTestType());
+        return "good";
+    }
+
     @GetMapping("/connect-check")
     public TestResultData connectCheck(){
-        TestResultData testResultData = new TestResultData();
-        testResultData.setConnected(true);
-        testResultData.setPatientName("춘자");
-        return testResultData;
+        return toSendUnity;
     }
+
+
+
+
+
     /////////////////////////이 밑은 테스트용
     @GetMapping("/get-test")
     public TestResultData getTest() {
