@@ -27,6 +27,9 @@ public class CTestResult {
     @Column(name = "visuospatial_score", nullable = false)
     private Integer visuospatialScore;
 
+    @Column(name = "remember_score", nullable = false)
+    private Integer rememberScore;
+
     @Column(name = "attention_score", nullable = false)
     private Integer attentionScore;
 

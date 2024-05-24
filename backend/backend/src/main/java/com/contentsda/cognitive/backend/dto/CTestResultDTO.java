@@ -13,6 +13,7 @@ public class CTestResultDTO {
     private Integer visuospatialScore;
     private Integer attentionScore;
     private Integer executeScore;
+    private Integer rememberScore;
     private List<Long> executeLogIds;
 
     public CTestResultDTO(CTestResult cTestResult) {
@@ -21,6 +22,7 @@ public class CTestResultDTO {
         this.visuospatialScore = cTestResult.getVisuospatialScore();
         this.attentionScore = cTestResult.getAttentionScore();
         this.executeScore = cTestResult.getExecuteScore();
+        this.rememberScore = cTestResult.getRememberScore();
         this.executeLogIds = cTestResult.getExecuteLogList() != null ? cTestResult.getExecuteLogList().stream().map(ExecuteLog::getId).collect(Collectors.toList()) : null;
     }
 }

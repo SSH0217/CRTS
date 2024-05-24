@@ -264,6 +264,7 @@ public class APIController {
         cTestResult.setMemoryScore(cTestData.getMemoryScore());
         cTestResult.setVisuospatialScore(cTestData.getVisuospatialScore());
         cTestResult.setExecuteScore(cTestData.getExecuteScore());
+        cTestResult.setRememberScore(cTestData.getRememberScore());
         cTestResult.setTestResult(testResult);
         cTestResultRepository.save(cTestResult);
 
@@ -502,6 +503,7 @@ public class APIController {
         cTestResultDetail.setAttentionScore(cTestResult.getAttentionScore());
         cTestResultDetail.setExecuteScore(cTestResult.getExecuteScore());
         cTestResultDetail.setVisuospatialScore(cTestResult.getVisuospatialScore());
+        cTestResultDetail.setRememberScore(cTestResult.getRememberScore());
         cTestResultDetail.setLogDTOList(logDTOList);
 
         return cTestResultDetail;
