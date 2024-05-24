@@ -33,10 +33,11 @@ const TestResults = ({ supervision }) => {
     executeResult: "집행기능 결과",
     executeTime: "집행기능 경과 시간",
     logDTOList: "로그",
-    memoryScore: "기억 점수",
-    visuospatialScore: "시공간 점수",
+    memoryScore: "기억입력 점수",
+    visuospatialScore: "시공간 능력 점수",
     attentionScore: "주의력 점수",
-    executeScore: "집행기능 점수"
+    executeScore: "집행기능 점수",
+    rememberScore: "기억회상 점수"
   };
 
   const handleOpen = async (result) => {
