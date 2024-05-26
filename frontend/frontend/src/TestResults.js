@@ -105,6 +105,49 @@ const TestResults = ({ supervision }) => {
     fetchTestResults();
   }, [supervision]);
 
+  const renderLogs = () => {
+    if (!logDetails) return null;
+
+    const logGroups = [];
+    let currentGroup = [];
+    logDetails.forEach((log, index) => {
+      if (log.log.includes('테스트 시작')) {
+        if (currentGroup.length > 0) {
+          logGroups.push(currentGroup);
+        }
+        currentGroup = [log];
+      } else {
+        currentGroup.push(log);
+      }
+    });
+    if (currentGroup.length > 0) {
+      logGroups.push(currentGroup);
+    }
+
+    return logGroups.map((group, groupIndex) => (
+      <TableContainer component={Paper} key={groupIndex} sx={{ mt: 2 }}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>테스트 시작 시간</TableCell>
+              <TableCell>로그 시간</TableCell>
+              <TableCell>로그 내용</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {group.map((log, index) => (
+              <TableRow key={index}>
+                <TableCell>{index === 0 ? new Date(log.logTime).toLocaleString() : ''}</TableCell>
+                <TableCell>{new Date(log.logTime).toLocaleString()}</TableCell>
+                <TableCell>{log.log}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    ));
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -205,30 +248,7 @@ const TestResults = ({ supervision }) => {
                 </>
               )}
 
-              {logDetails && (
-                <>
-                  <TableContainer component={Paper}>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Log 번호</TableCell>
-                          <TableCell>Log 시간</TableCell>
-                          <TableCell>Log 내용</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {logDetails.map((log, index) => (
-                          <TableRow key={index}>
-                            <TableCell>{log.logNum}</TableCell>
-                            <TableCell>{new Date(log.logTime).toLocaleString()}</TableCell>
-                            <TableCell>{log.log}</TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                </>
-              )}
+              {renderLogs()}
 
               <Box display="flex" justifyContent="flex-end" sx={{ mt: 2 }}>
                 <Button onClick={handleClose}>닫기</Button>
