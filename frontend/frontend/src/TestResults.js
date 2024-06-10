@@ -9,7 +9,7 @@ const TestResults = ({ supervision }) => {
   const [selectedResult, setSelectedResult] = useState(null);
   const [open, setOpen] = useState(false);
   const [testDetail, setTestDetail] = useState(null);
-  const [logDetails, setLogDetails] = useState(null); // logDTOList 저장을 위한 상태
+  const [logDetails, setLogDetails] = useState([]); // logDTOList 저장을 위한 상태
   const [testType, setTestType] = useState(null); // ATest인지 BTest인지 구분하기 위한 상태 추가
 
   const fieldNames = {
@@ -68,7 +68,7 @@ const TestResults = ({ supervision }) => {
         if (response.data.logDTOList) {
           setLogDetails(response.data.logDTOList); // 로그 정보 저장
         } else {
-          setLogDetails(null); // 로그 정보가 없으면 초기화
+          setLogDetails([]); // 로그 정보가 없으면 초기화
         }
       } catch (err) {
         setError('세부 정보를 가져오는 중 오류가 발생했습니다.');
@@ -80,7 +80,7 @@ const TestResults = ({ supervision }) => {
     setOpen(false);
     setSelectedResult(null);
     setTestDetail(null); // 모달을 닫을 때 세부 정보도 초기화
-    setLogDetails(null); // logDTOList 초기화
+    setLogDetails([]); // logDTOList 초기화
     setTestType(null); // 테스트 타입 초기화
   };
 
@@ -105,49 +105,6 @@ const TestResults = ({ supervision }) => {
     fetchTestResults();
   }, [supervision]);
 
-  const renderLogs = () => {
-    if (!logDetails) return null;
-
-    const logGroups = [];
-    let currentGroup = [];
-    logDetails.forEach((log, index) => {
-      if (log.log.includes('테스트 시작')) {
-        if (currentGroup.length > 0) {
-          logGroups.push(currentGroup);
-        }
-        currentGroup = [log];
-      } else {
-        currentGroup.push(log);
-      }
-    });
-    if (currentGroup.length > 0) {
-      logGroups.push(currentGroup);
-    }
-
-    return logGroups.map((group, groupIndex) => (
-      <TableContainer component={Paper} key={groupIndex} sx={{ mt: 2 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>테스트 시작 시간</TableCell>
-              <TableCell>로그 시간</TableCell>
-              <TableCell>로그 내용</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {group.map((log, index) => (
-              <TableRow key={index}>
-                <TableCell>{index === 0 ? new Date(log.logTime).toLocaleString() : ''}</TableCell>
-                <TableCell>{new Date(log.logTime).toLocaleString()}</TableCell>
-                <TableCell>{log.log}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    ));
-  };
-
   if (loading) {
     return <CircularProgress />;
   }
@@ -155,6 +112,48 @@ const TestResults = ({ supervision }) => {
   if (error) {
     return <Typography color="error">{error}</Typography>;
   }
+
+  const renderLogTable = () => {
+    if (!logDetails.length) return null;
+
+    const logsGroupedByTest = logDetails.reduce((acc, log) => {
+      const logTime = new Date(log.logTime).toLocaleString();
+      const logContent = log.log;
+      if (logContent.includes('테스트 시작')) {
+        acc.currentTest = { startTime: logTime, logs: [] };
+        acc.tests.push(acc.currentTest);
+      }
+      acc.currentTest.logs.push({ logTime, logContent });
+      return acc;
+    }, { tests: [], currentTest: { startTime: '', logs: [] } });
+
+    return (
+      <>
+        {logsGroupedByTest.tests.map((test, index) => (
+          <TableContainer component={Paper} key={index} sx={{ mt: 2 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>테스트 시작 시간</TableCell>
+                  <TableCell>로그 시간</TableCell>
+                  <TableCell>로그 내용</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {test.logs.map((log, logIndex) => (
+                  <TableRow key={logIndex}>
+                    <TableCell>{logIndex === 0 ? test.startTime : ''}</TableCell>
+                    <TableCell>{log.logTime}</TableCell>
+                    <TableCell>{log.logContent}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        ))}
+      </>
+    );
+  };
 
   return (
     <Box sx={{ p: 3 }}>
@@ -194,16 +193,16 @@ const TestResults = ({ supervision }) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={{ 
-          position: 'absolute', 
-          top: '50%', 
-          left: '50%', 
-          transform: 'translate(-50%, -50%)', 
+        <Box sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
           width: '80vw', // 모달 너비를 80%로 설정
           maxWidth: 800, // 최대 너비 설정
-          bgcolor: 'background.paper', 
-          border: '2px solid #000', 
-          boxShadow: 24, 
+          bgcolor: 'background.paper',
+          border: '2px solid #000',
+          boxShadow: 24,
           p: 4,
           maxHeight: '80vh', // 최대 높이 설정
           overflowY: 'auto' // 스크롤 추가
@@ -248,7 +247,7 @@ const TestResults = ({ supervision }) => {
                 </>
               )}
 
-              {renderLogs()}
+              {renderLogTable()}
 
               <Box display="flex" justifyContent="flex-end" sx={{ mt: 2 }}>
                 <Button onClick={handleClose}>닫기</Button>
